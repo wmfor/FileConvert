@@ -54,7 +54,7 @@ public class MainWindowViewModel : ViewModelBase
     public FileConvertSelect SelectedConversionType;
 
     
-    
+    public ICommand ToggleCheckBoxCommand { get; }
     public ICommand OpenFileSelectCommand { get; }
     public ICommand OpenSettingsSelectCommand { get; }
     public ICommand GenerateFileSelectCommand { get; }
@@ -73,6 +73,7 @@ public class MainWindowViewModel : ViewModelBase
         OpenFileSelectCommand = ReactiveCommand.Create(OpenFileSelectWindow);
         OpenSettingsSelectCommand = ReactiveCommand.Create(OpenSettingsWindow);
         GenerateFileSelectCommand = ReactiveCommand.Create(GenerateFile);
+        
     }
 
     private WindowBase GetTopLevel()
@@ -182,17 +183,17 @@ public class MainWindowViewModel : ViewModelBase
         Console.WriteLine(runCommand);
     }
 
-
-    public void OpenGitHubLink() => OpenLinkInBrowser("https://github.com/turacept");
-
-    public void OpenTwitterLink() =>  OpenLinkInBrowser("https://twitter.com/WestonFor");
-
-
-    private void OpenLinkInBrowser(string link)
+    
+    
+    public void OpenLinkInBrowser(string link)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            Process.Start(new ProcessStartInfo("cmd", $"/c start {link}"));
+            ProcessStartInfo windowsProcess = new ProcessStartInfo("cmd", $"/c start {link}");
+            windowsProcess.WindowStyle = ProcessWindowStyle.Hidden;
+            
+            Process.Start(windowsProcess);
+            
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
