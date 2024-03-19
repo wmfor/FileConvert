@@ -4585,11 +4585,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\GITHUB\\2. Applications\\FileConvert\\FileConvert.csproj",
+      "projectUniqueName": "C:\\GITHUB\\2. Applications\\FileConvert\\FileConvert\\FileConvert.csproj",
       "projectName": "FileConvert",
-      "projectPath": "C:\\GITHUB\\2. Applications\\FileConvert\\FileConvert.csproj",
+      "projectPath": "C:\\GITHUB\\2. Applications\\FileConvert\\FileConvert\\FileConvert.csproj",
       "packagesPath": "C:\\Users\\westo\\.nuget\\packages\\",
-      "outputPath": "C:\\GITHUB\\2. Applications\\FileConvert\\obj\\",
+      "outputPath": "C:\\GITHUB\\2. Applications\\FileConvert\\FileConvert\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\westo\\AppData\\Roaming\\NuGet\\NuGet.Config",

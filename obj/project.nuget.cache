@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HhZs/c9VrG4S2gZd3wMEQ07qo4zfORR3q59n8/cNbCzA4yglW+dvCGe7PESUUJU2++zS/KhaU+/6QLWxKlSfDQ==",
+  "dgSpecHash": "8fE7a8XqdlPBJHhBJt/mSat1osmOFcALLZsvW9Xy1BXC1jN1vkE13Rvn/0Wokb96bgI4pNbi9loaH7aYWhFOmA==",
   "success": true,
-  "projectFilePath": "C:\\GITHUB\\2. Applications\\FileConvert\\FileConvert.csproj",
+  "projectFilePath": "C:\\GITHUB\\2. Applications\\FileConvert\\FileConvert\\FileConvert.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\westo\\.nuget\\packages\\avalonia\\11.0.10\\avalonia.11.0.10.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\avalonia.angle.windows.natives\\2.1.0.2023020321\\avalonia.angle.windows.natives.2.1.0.2023020321.nupkg.sha512",

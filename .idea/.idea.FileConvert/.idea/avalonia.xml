@@ -3,7 +3,9 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="CustomMoveableWindow.axaml" value="FileConvert.csproj" />
         <entry key="Views/MainWindow.axaml" value="FileConvert.csproj" />
+        <entry key="Views/SettingsWindow.axaml" value="FileConvert.csproj" />
       </map>
     </option>
   </component>

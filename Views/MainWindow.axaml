@@ -3,34 +3,63 @@
         xmlns:vm="using:FileConvert.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400" Width="600" Height="400"
         x:Class="FileConvert.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="FileConvert">
+        Icon="/Assets/TypeConvert_Logo.ico"
+        Title="FileConvert"
+        Background="Transparent"
+        TransparencyLevelHint="AcrylicBlur"
+        CanResize="false"
+>
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-    <StackPanel Margin="20">
-        <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBlock Margin="0 5" >Select the file you wish to convert.</TextBlock>
+    
+        <!-- The header section UI !-->
+        <Grid RowDefinitions="Auto, *, Auto">
+        <Grid Grid.Row="0" Background="SlateGray" Height="40" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+            <Button Grid.Column="0" Command="{Binding OpenSettingsSelectCommand}" Background="White" Width="40" Height="40"><Image Source="../Assets/SettingsIcon.png"></Image></Button>
+            
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2">
+                <Label FontWeight="Black">File Convert</Label>
+                <Label>by Weston Forbes</Label>
+            </StackPanel>
+        </Grid>
+        <!-- End of header section !-->
         
-        <Button  Content="Select File" Command="{Binding OpenFileSelectCommand}"/>
-        <TextBlock Margin="0 5" >Desired Output</TextBlock>
-        <StackPanel Margin="20">
-            <ComboBox SelectedIndex="0" MaxDropDownHeight="100">
-                <ComboBoxItem>PNG</ComboBoxItem>
-                <ComboBoxItem>JPG</ComboBoxItem>
-                <ComboBoxItem>GIF</ComboBoxItem>
-                <ComboBoxItem>MP3</ComboBoxItem>
-                <ComboBoxItem>MP4</ComboBoxItem>
-                <ComboBoxItem>WAV</ComboBoxItem>
-            </ComboBox>
-        </StackPanel>
-        <Button  Content="Generate"/>
-    </StackPanel>
-
+        <!-- The primary content area !-->
+        <Grid Grid.Row="1">
+            <StackPanel Width="450">
+                <TextBlock Margin="0 30" HorizontalAlignment="Center" FontWeight="Black" FontSize="14">Select the file you wish to convert.</TextBlock>
+                <Label Content="{Binding SelectedFilePath , Mode=TwoWay}" Name="SelectedFilePathText"/>
+                <Button  Content="Select File" Command="{Binding OpenFileSelectCommand}" HorizontalAlignment="Stretch"  Margin="5" HorizontalContentAlignment="Center"/>
+                <TextBlock Margin="0 15" HorizontalAlignment="Center" FontWeight="Black" FontSize="14">What's the desired output file type?</TextBlock>
+                
+                <ComboBox SelectedIndex="0" MaxDropDownHeight="100"  HorizontalAlignment="Stretch" Margin="5,0,5,0">
+                    <ComboBoxItem>PNG</ComboBoxItem>
+                    <ComboBoxItem>JPG</ComboBoxItem>
+                    <ComboBoxItem>GIF</ComboBoxItem>
+                    <ComboBoxItem>ICO</ComboBoxItem>
+                    <ComboBoxItem>MP3</ComboBoxItem>
+                    <ComboBoxItem>MP4</ComboBoxItem>
+                    <ComboBoxItem>WAV</ComboBoxItem>
+                </ComboBox>
+                
+            <Button  Content="Generate" Command="{Binding GenerateFileSelectCommand}" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5, 25, 5, 5" Height="40" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+        <!-- End of primary content !-->
+        
+        <Grid Grid.Row="2" Margin="5" Background="SlateGray" ColumnDefinitions="Auto, Auto, *, Auto, Auto, Auto, Auto, Auto">
+            <Button Grid.Column="0" Margin="5">GitHub</Button>
+            <Button Grid.Column="1" Margin="5">Twitter</Button>
+        </Grid>
+        
+        </Grid>
+        
+  
 </Window>

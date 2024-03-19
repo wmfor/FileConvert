@@ -13,12 +13,15 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = FileConvert
-build_property.ProjectDir = C:\GITHUB\2. Applications\FileConvert\
+build_property.ProjectDir = C:\GITHUB\2. Applications\FileConvert\FileConvert\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 
-[C:/GITHUB/2. Applications/FileConvert/App.axaml]
+[C:/GITHUB/2. Applications/FileConvert/FileConvert/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/GITHUB/2. Applications/FileConvert/Views/MainWindow.axaml]
+[C:/GITHUB/2. Applications/FileConvert/FileConvert/Views/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/GITHUB/2. Applications/FileConvert/FileConvert/Views/SettingsWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
