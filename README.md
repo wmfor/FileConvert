@@ -4,21 +4,21 @@
 # Supported FileTypes 
 
 VIDEO--
-mp4
-gif
+mp4,
+gif,
 
 AUDIO--
-mp3
-wav
-flac
+mp3,
+wav,
+flac,
 
 
 PHOTO--
-jpg
-png
-avif
-webp
-bmp
-tiff
+jpg,
+png,
+avif,
+webp,
+bmp,
+tiff,
 
 
