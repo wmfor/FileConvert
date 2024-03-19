@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:FileConvert.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="FileConvert.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="FileConvert">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    <StackPanel Margin="20">
+        <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Margin="0 5" >Select the file you wish to convert.</TextBlock>
+        
+        <Button  Content="Select File" Command="{Binding OpenFileSelectCommand}"/>
+        <TextBlock Margin="0 5" >Desired Output</TextBlock>
+        <StackPanel Margin="20">
+            <ComboBox SelectedIndex="0" MaxDropDownHeight="100">
+                <ComboBoxItem>PNG</ComboBoxItem>
+                <ComboBoxItem>JPG</ComboBoxItem>
+                <ComboBoxItem>GIF</ComboBoxItem>
+                <ComboBoxItem>MP3</ComboBoxItem>
+                <ComboBoxItem>MP4</ComboBoxItem>
+                <ComboBoxItem>WAV</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+        <Button  Content="Generate"/>
+    </StackPanel>
+
+</Window>
