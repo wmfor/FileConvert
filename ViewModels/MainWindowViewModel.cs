@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
+
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
@@ -178,7 +181,28 @@ public class MainWindowViewModel : ViewModelBase
         RunCommand(runCommand, true);
         Console.WriteLine(runCommand);
     }
-    
+
+
+    public void OpenGitHubLink() => OpenLinkInBrowser("https://github.com/turacept");
+
+    public void OpenTwitterLink() =>  OpenLinkInBrowser("https://twitter.com/WestonFor");
+
+
+    private void OpenLinkInBrowser(string link)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            Process.Start(new ProcessStartInfo("cmd", $"/c start {link}"));
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            Process.Start("xdg-open", link);
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            Process.Start("open", link);
+        }
+    }
     
     public static string RunCommand(string arguments, bool readOutput)
     {
