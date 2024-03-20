@@ -39,17 +39,20 @@
             <StackPanel Width="450">
                 <TextBlock Margin="0 30" HorizontalAlignment="Center" FontWeight="Black" FontSize="14">Select the file you wish to convert.</TextBlock>
                 <Label Content="{Binding SelectedFilePath , Mode=TwoWay}" Name="SelectedFilePathText"/>
-                <Button  Content="Select File" Command="{Binding OpenFileSelectCommand}" HorizontalAlignment="Stretch"  Margin="5" HorizontalContentAlignment="Center"/>
+                <Button Content="Select File" Command="{Binding OpenFileSelectCommand}" HorizontalAlignment="Stretch"  Margin="5" HorizontalContentAlignment="Center"/>
                 <TextBlock Margin="0 15" HorizontalAlignment="Center" FontWeight="Black" FontSize="14">What's the desired output file type?</TextBlock>
                 
-                <ComboBox SelectedIndex="0" MaxDropDownHeight="100"  HorizontalAlignment="Stretch" Margin="5,0,5,0">
+                <ComboBox Name="FileTypeComboBox" SelectionChanged="OnComboBoxChangeSelected" SelectedIndex="{Binding SelectedConversionTypeIndex}" HorizontalContentAlignment="Center" MaxDropDownHeight="100"  HorizontalAlignment="Stretch" Margin="5,0,5,0">
                     <ComboBoxItem>PNG</ComboBoxItem>
                     <ComboBoxItem>JPG</ComboBoxItem>
                     <ComboBoxItem>GIF</ComboBoxItem>
+                    <ComboBoxItem>WEBP</ComboBoxItem>
                     <ComboBoxItem>ICO</ComboBoxItem>
                     <ComboBoxItem>MP3</ComboBoxItem>
                     <ComboBoxItem>MP4</ComboBoxItem>
+                    <ComboBoxItem>FLAC</ComboBoxItem>
                     <ComboBoxItem>WAV</ComboBoxItem>
+                    <ComboBoxItem>OGG</ComboBoxItem>
                 </ComboBox>
                 
             <Button  Content="Generate" Command="{Binding GenerateFileSelectCommand}" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5, 35, 5, 5" Height="40" HorizontalContentAlignment="Center"/>

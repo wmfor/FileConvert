@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
-
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
@@ -15,17 +12,18 @@ using FileConvert.Views;
 using ReactiveUI;
 namespace FileConvert.ViewModels;
 
-
-public enum FileConvertSelect
+enum ConversionType
 {
     PNG,
     JPG,
     GIF,
     WEBP,
+    ICO,
     MP3,
     MP4,
+    FLAC,
+    WAV,
     OGG,
-    WEBM,
 }
 
 public class MainWindowViewModel : ViewModelBase
@@ -49,31 +47,61 @@ public class MainWindowViewModel : ViewModelBase
         get => _outputFilePath; 
         set => this.RaiseAndSetIfChanged(ref _outputFilePath, value);
     }
-    
-    //The type of conversion desired.
-    public FileConvertSelect SelectedConversionType;
 
+    //This is used to get the string value of the combobox for output type options.
+    public string SelectedConversionType
+    {
+        get => _SelectedConversionType;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _SelectedConversionType, value);
+            SelectedConversionTypeIndex = (int)Enum.Parse(typeof(ConversionType), _SelectedConversionType);
+            Console.WriteLine("Selected Type Changed To " + _SelectedConversionType);
+        }
+    }
+     
+    //This is used for storing the specific index of the selected output type.
+    public int SelectedConversionTypeIndex
+    {
+        get => _SelectedConversionTypeIndex;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _SelectedConversionTypeIndex, value);
+            Console.WriteLine("Selected Conversion Index Changed To " + _SelectedConversionTypeIndex);
+        }
+    }
+    private int _SelectedConversionTypeIndex;
+
+
+
+    private string _SelectedConversionType;
     
-    public ICommand ToggleCheckBoxCommand { get; }
+    
     public ICommand OpenFileSelectCommand { get; }
     public ICommand OpenSettingsSelectCommand { get; }
     public ICommand GenerateFileSelectCommand { get; }
 
+
+
+    
+    
     //The instance of the settings window.
-    public SettingsWindow? _SettingsInstance;
+    public SettingsWindow? SettingsInstance;
     private SettingsWindowViewModel? _SettingsInstanceViewModel;
+
+  
+
     
     
-    
+
     
     //Window Constructor.
     public MainWindowViewModel()
     {
-        
+        _SelectedConversionType = "PNG";
         OpenFileSelectCommand = ReactiveCommand.Create(OpenFileSelectWindow);
         OpenSettingsSelectCommand = ReactiveCommand.Create(OpenSettingsWindow);
         GenerateFileSelectCommand = ReactiveCommand.Create(GenerateFile);
-        
     }
 
     private WindowBase GetTopLevel()
@@ -84,8 +112,6 @@ public class MainWindowViewModel : ViewModelBase
         return null;
     }
     
-    //Called via the dropdown menu for conversion type selection.
-    public void SelectConversionType(int index) =>  SelectedConversionType = (FileConvertSelect)index;
     
     
     private async void OpenFileSelectWindow()
@@ -108,31 +134,38 @@ public class MainWindowViewModel : ViewModelBase
         // Now feed this into ffplay.
     }
 
+   
+    
+
     //Called via the 'Settings' gear button.
     private void OpenSettingsWindow()
     {
         
         //If the settings window is already visible, hide it.
-        if (_SettingsInstance != null && _SettingsInstance.IsVisible)
+        if (SettingsInstance != null && SettingsInstance.IsVisible)
         {
+            Console.WriteLine("Window is already visible, hide it.");
+            
             CloseSettingsWindow();
         }
         
         //If the settings window hasn't been instantiated yet, create it.
-        if (_SettingsInstance == null || !_SettingsInstance.IsVisible)
+        else if (SettingsInstance == null || !SettingsInstance.IsVisible)
         {
+            Console.WriteLine("Window hasn't been made yet, create it.");
+            
             CloseSettingsWindow();
 
             _SettingsInstanceViewModel = new SettingsWindowViewModel();
             
-            _SettingsInstance = new SettingsWindow
+            SettingsInstance = new SettingsWindow
             {
                 DataContext = _SettingsInstanceViewModel,
-            };
+           };
 
             _SettingsInstanceViewModel.MainWindowViewModel = this;
             
-            _SettingsInstance.Show();
+            SettingsInstance.Show();
         }
 
     }
@@ -140,16 +173,15 @@ public class MainWindowViewModel : ViewModelBase
     //Called by clicking on the 'Settings' button while the window is open.
     private void CloseSettingsWindow()
     {
-        if (_SettingsInstance == null)
+        if (SettingsInstance == null)
         {
             Console.WriteLine("ERROR | Tried to close settings window while it doesn't exist!");
             return;
         }
         
         
-        
-        _SettingsInstance.Close();
-        _SettingsInstance = null;
+        SettingsInstance.Close();
+        SettingsInstance = null;
         _SettingsInstanceViewModel = null;
     }
     
@@ -163,24 +195,49 @@ public class MainWindowViewModel : ViewModelBase
             return;
         }
         
-        // Start async operation to open the dialog.
+        // Open a folder select prompt to select where you'd like to file to be outputted.
         IReadOnlyList<IStorageFolder> folders = await GetTopLevel().StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
         {
             Title = "Select Folder",
             AllowMultiple = false
         });
-
-
+        
+        //Make sure a folder was selected, & not more than 1.
         if (folders.Count != 1)
             return;
         
+        //Get the file path in a string.
         _outputFilePath = folders[0].Path.ToString().Remove(0, 8);
 
-        string outputFileName = $"ConvertedFile{Guid.NewGuid()}";
-        string runCommand = "cd " + _outputFilePath + " && ffmpeg -i " + _selectedFilePath + " " + outputFileName + ".ogg";
+        switch (SelectedConversionType)
+        {
+            case "PNG":
+                break;
+            case "JPG":
+                break;
+            case "GIF":
+                break;
+            case "WEBP":
+                break;
+            case "ICO":
+                break;
+            case "MP3":
+                break;
+            case "MP4":
+                break;
+            case "WAV":
+                break;
+            case "OGG":
+                break;
+        }
         
-        RunCommand(runCommand, true);
+
+        string outputFileName = $"ConvertedFile{Guid.NewGuid()}";
+        string runCommand = "cd " + _outputFilePath + " && ffmpeg -i " + _selectedFilePath + " " + outputFileName + $".{SelectedConversionType.ToLower()}";
+        
+        RunCMDCommand(runCommand, true);
         Console.WriteLine(runCommand);
+        Console.WriteLine("CONVERTING TO TYPE -!--!- " + SelectedConversionType.ToLower());
     }
 
     
@@ -193,7 +250,6 @@ public class MainWindowViewModel : ViewModelBase
             windowsProcess.WindowStyle = ProcessWindowStyle.Hidden;
             
             Process.Start(windowsProcess);
-            
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
@@ -204,8 +260,11 @@ public class MainWindowViewModel : ViewModelBase
             Process.Start("open", link);
         }
     }
+
+  
     
-    public static string RunCommand(string arguments, bool readOutput)
+    
+    public static string RunCMDCommand(string arguments, bool readOutput)
     {
         var output = string.Empty;
         try
