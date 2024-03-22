@@ -2,6 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:FileConvert.ViewModels"
+        x:DataType="vm:SettingsWindowViewModel"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400" Width="400" Height="400"
         x:Class="FileConvert.Views.SettingsWindow"
         Title="SettingsWindow"
@@ -28,13 +30,13 @@
                 <Grid RowDefinitions="Auto, *, Auto">
                     
                     <Border Grid.Row="0" Margin="5,5,5,5" Background="Black" CornerRadius="15" BorderBrush="Black"  BorderThickness="1" Padding="7">
-                    <CheckBox Margin="5,5,5,5" FontWeight="Black" FontSize="20">
+                    <CheckBox Margin="5,5,5,5" FontWeight="Black"  Name="SameCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
                         <Label Foreground="White">Keep same file name</Label>
                     </CheckBox>
                     </Border>
                     
                     <Border Grid.Row="1" Margin="5,5,5,5" Background="Black" CornerRadius="15" BorderBrush="Black"  BorderThickness="1" Padding="7">
-                    <CheckBox Margin="5,5,5,5" FontWeight="Black" FontSize="20">
+                    <CheckBox Margin="5,5,5,5" FontWeight="Black" IsChecked="true"  Name="RandomCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
                         <Label Foreground="White">Generate random file name</Label>
                     </CheckBox>
                     </Border>
@@ -42,10 +44,10 @@
                     <Border Grid.Row="2" Margin="5,5,5,5" Background="Black" CornerRadius="15" BorderBrush="Black"   BorderThickness="1" Padding="7">
                     <StackPanel>
                         
-                        <CheckBox Margin="5,5,5,5" FontWeight="Black" FontSize="20">
+                        <CheckBox Margin="5,5,5,5" FontWeight="Black" Name="SpecificCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
                             <Label Foreground="White">Choose specific file name</Label>
                         </CheckBox>
-                        <TextBox  Watermark="Enter a output name"/>
+                        <TextBox Name="SpecificNameTextBox" TextChanged="OnTextBoxChanged"  Watermark="Enter a output name"/>
                     </StackPanel>
                         </Border>
                     
@@ -54,7 +56,6 @@
             <!-- End of primary content !-->
         
             <Grid Grid.Row="2" Margin="5" VerticalAlignment="Bottom">
-                <Button  CornerRadius="15" Content="Save" BorderThickness="2" BorderBrush="Black" Height="45" FontWeight="Black" FontSize="20" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Margin="5, 5, 5, 5" HorizontalContentAlignment="Center"/>
             </Grid>
         
         </Grid>

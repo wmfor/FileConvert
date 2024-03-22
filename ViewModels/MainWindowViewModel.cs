@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using Avalonia;
@@ -12,7 +14,8 @@ using FileConvert.Views;
 using ReactiveUI;
 namespace FileConvert.ViewModels;
 
-enum ConversionType
+//Make sure the ComboBox options match these exactly, uses this are reference to get index of option.
+internal enum ConversionType
 {
     PNG,
     JPG,
@@ -32,8 +35,18 @@ public class MainWindowViewModel : ViewModelBase
 
 
 
-    private string? _selectedFilePath = "C:/";
-    private string _outputFilePath = "C:/";
+    private string? _selectedFilePath = ""; //The full path to the seleced file.
+    private string _selectedFileName = ""; //What the raw name of the selected file is e.g "FileName", or "MyFileWestonForbes", etc.
+    public string SelectedFileType = ""; //What the selected file's type is e.g. png, jpg, etc.
+
+
+    private string _DataConversionType;
+    
+    public string DataConversionType
+    {
+        get => _DataConversionType;
+        set => this.RaiseAndSetIfChanged(ref _DataConversionType, value);
+    }
     
     //The path you've selected for the file you wish to convert.
     public string? SelectedFilePath
@@ -42,11 +55,6 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _selectedFilePath, value);
     }
     
-    //Where the newly converted files will be output.
-    public string OutputFilePath  {
-        get => _outputFilePath; 
-        set => this.RaiseAndSetIfChanged(ref _outputFilePath, value);
-    }
 
     //This is used to get the string value of the combobox for output type options.
     public string SelectedConversionType
@@ -80,7 +88,7 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand OpenFileSelectCommand { get; }
     public ICommand OpenSettingsSelectCommand { get; }
     public ICommand GenerateFileSelectCommand { get; }
-
+    public ICommand OpenLastOutputFolderCommand { get; }
 
 
     
@@ -102,6 +110,7 @@ public class MainWindowViewModel : ViewModelBase
         OpenFileSelectCommand = ReactiveCommand.Create(OpenFileSelectWindow);
         OpenSettingsSelectCommand = ReactiveCommand.Create(OpenSettingsWindow);
         GenerateFileSelectCommand = ReactiveCommand.Create(GenerateFile);
+        OpenLastOutputFolderCommand = ReactiveCommand.Create(OpenFolderWindow);
     }
 
     private WindowBase GetTopLevel()
@@ -113,11 +122,9 @@ public class MainWindowViewModel : ViewModelBase
     }
     
     
-    
+    //Will be called once the select file button is pressed.
     private async void OpenFileSelectWindow()
     {
-        //Will be called once the select file button is pressed.
-        
         // Start async operation to open the dialog.
         IReadOnlyList<IStorageFile> files = await GetTopLevel().StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -130,8 +137,14 @@ public class MainWindowViewModel : ViewModelBase
             return;
         
         SelectedFilePath = files[0].Path.ToString().Remove(0,8);
-        Console.WriteLine(SelectedFilePath);
-        // Now feed this into ffplay.
+        
+        string rawName = _selectedFilePath.Split('/').Last().Split('.').First();
+        string fileType = _selectedFilePath.Split('/').Last().Split('.').Last();
+
+        _selectedFileName = rawName;
+        SelectedFileType = fileType;
+        
+        
     }
 
    
@@ -140,12 +153,10 @@ public class MainWindowViewModel : ViewModelBase
     //Called via the 'Settings' gear button.
     private void OpenSettingsWindow()
     {
-        
         //If the settings window is already visible, hide it.
         if (SettingsInstance != null && SettingsInstance.IsVisible)
         {
             Console.WriteLine("Window is already visible, hide it.");
-            
             CloseSettingsWindow();
         }
         
@@ -156,18 +167,18 @@ public class MainWindowViewModel : ViewModelBase
             
             CloseSettingsWindow();
 
-            _SettingsInstanceViewModel = new SettingsWindowViewModel();
-            
+            if(_SettingsInstanceViewModel == null)
+                _SettingsInstanceViewModel = new SettingsWindowViewModel();
+
             SettingsInstance = new SettingsWindow
             {
-                DataContext = _SettingsInstanceViewModel,
-           };
+                DataContext = _SettingsInstanceViewModel
+            };
 
             _SettingsInstanceViewModel.MainWindowViewModel = this;
             
             SettingsInstance.Show();
         }
-
     }
     
     //Called by clicking on the 'Settings' button while the window is open.
@@ -179,10 +190,27 @@ public class MainWindowViewModel : ViewModelBase
             return;
         }
         
-        
         SettingsInstance.Close();
         SettingsInstance = null;
-        _SettingsInstanceViewModel = null;
+    }
+
+
+    private void OpenFolderWindow()
+    {
+        if (Directory.Exists(_selectedFilePath))
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = _selectedFilePath,
+                FileName = "explorer.exe"
+            };
+
+            Process.Start(startInfo);
+        }
+        else
+        {
+            Console.Write("Directory does not exist!");
+        }
     }
     
     
@@ -207,37 +235,101 @@ public class MainWindowViewModel : ViewModelBase
             return;
         
         //Get the file path in a string.
-        _outputFilePath = folders[0].Path.ToString().Remove(0, 8);
+        string outputFilePath = folders[0].Path.ToString().Remove(0, 8);
 
+        bool useFfmpeg = GetIsUsingFFMPEG(); //Determine what conversion library to use.
+        string outputFileName = GetFileOutputName(outputFilePath); //Figure out which file name format will be used.
+
+        if (useFfmpeg)
+        {
+            //Replace this with docker running it, research it...
+            
+            string runCommand = "cd " + outputFilePath + " && ffmpeg -i " + _selectedFilePath + " " + outputFileName + $".{SelectedConversionType.ToLower()}";
+            RunCMDCommand(runCommand, true);
+            Console.WriteLine(runCommand);
+        }
+        else if (!useFfmpeg)
+        {
+            Console.WriteLine("Can't convert this type just yet.");
+        }
+    }
+
+    private bool GetIsUsingFFMPEG()
+    {
+        //Do the switch between FFMPEG & other library logic here.
         switch (SelectedConversionType)
         {
             case "PNG":
-                break;
+                return false;
             case "JPG":
-                break;
+                return false;
             case "GIF":
-                break;
+                return true;
             case "WEBP":
-                break;
+                return false;
             case "ICO":
-                break;
+                return false;
             case "MP3":
-                break;
+                return true;
             case "MP4":
-                break;
+                return true;
             case "WAV":
-                break;
+                return true;
             case "OGG":
-                break;
+                return true;
+            case "FLAC":
+                return true;
+        }
+        
+        Console.WriteLine("Used conversion type that was out of bounds of GetIsUsingFFMPEG's switch range, returning false.");
+        return false;
+    }
+
+    private string GetFileOutputName(string outputFilePath)
+    {
+        bool doesContainDuplicateSpecificName = false;
+        bool doesContainDuplicateSameName = false;
+        
+        //Get all files in the chosen output directory.
+        foreach (string file in Directory.GetFiles(outputFilePath))
+        {
+            string fixedFile = file.Remove(0, outputFilePath.Length + 1); //Removes the directory prefix.
+            
+            Console.WriteLine(fixedFile);
+            
+            if (_SettingsInstanceViewModel!.SpecificName != null && fixedFile.Contains(_SettingsInstanceViewModel!.SpecificName)) //There's already a file with the same specific name in that directory.
+                doesContainDuplicateSpecificName = true;
+            else if (fixedFile.Contains("originalFileName")) //There's already a file with the same original name in that directory.
+                doesContainDuplicateSameName = true;
         }
         
 
-        string outputFileName = $"ConvertedFile{Guid.NewGuid()}";
-        string runCommand = "cd " + _outputFilePath + " && ffmpeg -i " + _selectedFilePath + " " + outputFileName + $".{SelectedConversionType.ToLower()}";
+        //Set the file to a random name by default.
+        string? outputFileName = default;
         
-        RunCMDCommand(runCommand, true);
-        Console.WriteLine(runCommand);
-        Console.WriteLine("CONVERTING TO TYPE -!--!- " + SelectedConversionType.ToLower());
+        
+        if (_SettingsInstanceViewModel!.IsRandomNameSelected)           // RANDOM NAME
+        {
+            outputFileName = $"ConvertedFile{Guid.NewGuid()}";
+        }
+        else if (_SettingsInstanceViewModel.IsSameNameSelected)         // SAME NAME
+        {
+            outputFileName = doesContainDuplicateSameName ? $"{_selectedFileName}{Guid.NewGuid()}" : _selectedFileName;
+        }
+        else if (_SettingsInstanceViewModel.IsSpecificNameSelected)     //SPECIFIC NAME
+        {
+            //Make sure there's text entered in the TextBox.
+            if (_SettingsInstanceViewModel!.SpecificName != default && _SettingsInstanceViewModel!.SpecificName != "")
+            {
+                outputFileName = doesContainDuplicateSpecificName ? $"{_SettingsInstanceViewModel.SpecificName}{Guid.NewGuid()}" : _SettingsInstanceViewModel.SpecificName;
+            }
+            else //If there's no specific name entered.
+            {
+                outputFileName = $"ConvertedFile{Guid.NewGuid()}";
+            }
+        }
+        
+        return outputFileName!;
     }
 
     

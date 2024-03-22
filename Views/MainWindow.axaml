@@ -3,68 +3,117 @@
         xmlns:vm="using:FileConvert.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400" Width="600" Height="400"
+        mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="400" Width="450" Height="400"
         x:Class="FileConvert.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/TypeConvert_Logo.ico"
         Title="FileConvert"
         Background="Transparent"
         TransparencyLevelHint="AcrylicBlur"
-        CanResize="false"
->
+        CanResize="false">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
-    
-        <!-- The header section UI !-->
-        <Grid RowDefinitions="Auto, *, Auto">
-        <Grid Grid.Row="0" Background="SlateGray" Height="40" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
-            <Button Grid.Column="0" Command="{Binding OpenSettingsSelectCommand}"  Width="40" Height="40"><Image Source="../Assets/SettingsIcon.png"></Image></Button>
+
+    <!-- The header section UI !-->
+    <Grid RowDefinitions="Auto, *, Auto">
+        <Grid Grid.Row="0" Background="DimGray" Height="25" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+            <Button Grid.Column="0" Command="{Binding OpenSettingsSelectCommand}" Width="25" Height="25">
+                <Image Source="../Assets/SettingsIcon.png" Width="60" Height="20"></Image>
+            </Button>
             
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2">
-                <Label FontWeight="Black">File Convert</Label>
-                <Label>by Weston Forbes</Label>
-            </StackPanel>
-            
-            <Button Grid.Column="3" Margin="5" CommandParameter="https://github.com/turacept" Command="{Binding OpenLinkInBrowser}"><Image Source="../Assets/Github.png" Height="25"></Image></Button>
-            <Button Grid.Column="4" Margin="5" CommandParameter="https://twitter.com/WestonFor" Command="{Binding OpenLinkInBrowser}"><Image Source="../Assets/Twitter.png" Height="25"></Image></Button>
         </Grid>
         <!-- End of header section !-->
-        
+
         <!-- The primary content area !-->
         <Grid Grid.Row="1">
-            <StackPanel Width="450">
-                <TextBlock Margin="0 30" HorizontalAlignment="Center" FontWeight="Black" FontSize="14">Select the file you wish to convert.</TextBlock>
-                <Label Content="{Binding SelectedFilePath , Mode=TwoWay}" Name="SelectedFilePathText"/>
-                <Button Content="Select File" Command="{Binding OpenFileSelectCommand}" HorizontalAlignment="Stretch"  Margin="5" HorizontalContentAlignment="Center"/>
-                <TextBlock Margin="0 15" HorizontalAlignment="Center" FontWeight="Black" FontSize="14">What's the desired output file type?</TextBlock>
-                
-                <ComboBox Name="FileTypeComboBox" SelectionChanged="OnComboBoxChangeSelected" SelectedIndex="{Binding SelectedConversionTypeIndex}" HorizontalContentAlignment="Center" MaxDropDownHeight="100"  HorizontalAlignment="Stretch" Margin="5,0,5,0">
-                    <ComboBoxItem>PNG</ComboBoxItem>
-                    <ComboBoxItem>JPG</ComboBoxItem>
-                    <ComboBoxItem>GIF</ComboBoxItem>
-                    <ComboBoxItem>WEBP</ComboBoxItem>
-                    <ComboBoxItem>ICO</ComboBoxItem>
-                    <ComboBoxItem>MP3</ComboBoxItem>
-                    <ComboBoxItem>MP4</ComboBoxItem>
-                    <ComboBoxItem>FLAC</ComboBoxItem>
-                    <ComboBoxItem>WAV</ComboBoxItem>
-                    <ComboBoxItem>OGG</ComboBoxItem>
-                </ComboBox>
-                
-            <Button  Content="Generate" Command="{Binding GenerateFileSelectCommand}" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5, 35, 5, 5" Height="40" HorizontalContentAlignment="Center"/>
-            </StackPanel>
+            <Grid ColumnDefinitions="175, *, Auto">
+
+                <Grid Grid.Column="0" Background="DimGray">
+                    <Grid RowDefinitions="Auto, Auto, Auto">
+                        <Image Grid.Row="0" x:Name="SelectedImage" Source="../Assets/TypeConvert_Logo.ico" Width="140" Margin="5,5,5,5"></Image>
+                        <Label Grid.Row="1" Content="{Binding SelectedFilePath , Mode=TwoWay}" Foreground="White"
+                               Name="SelectedFilePathText" HorizontalAlignment="Center" FontSize="10" />
+                        <Label HorizontalAlignment="Center" Grid.Row="2" Foreground="White" Name="ConversionTypeLabel"
+                               Content="{Binding DataConversionType, Mode=TwoWay}" FontSize="20" />
+                    </Grid>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid RowDefinitions="Auto, Auto, Auto">
+                        <Grid RowDefinitions="Auto, Auto, Auto">
+                            <StackPanel Grid.Row="0" Margin="0, 15,0,5">
+                                <TextBlock Margin="5 0,5,0" HorizontalAlignment="Center" Foreground="White"
+                                           FontSize="14">
+                                    Select the file you wish to convert.
+                                </TextBlock>
+                                <Button Content="Select File" Width="250" BorderThickness="1"
+                                        BorderBrush="AntiqueWhite" Foreground="Black" Click="OnSelectFileButtonClicked" 
+                                        Command="{Binding OpenFileSelectCommand}" HorizontalAlignment="Stretch"
+                                        Margin="5" HorizontalContentAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Margin="0, 0,0,5">
+
+                                <TextBlock Margin="0 15,5,5" HorizontalAlignment="Center" Foreground="White"
+                                           FontSize="14">
+                                    Select your desired output file type
+                                </TextBlock>
+
+                                <ComboBox Name="FileTypeComboBox" Width="250"
+                                          SelectionChanged="OnComboBoxChangeSelected" FontWeight="Black" FontSize="14"
+                                          SelectedIndex="{Binding SelectedConversionTypeIndex}"
+                                          HorizontalContentAlignment="Center" MaxDropDownHeight="400"
+                                          HorizontalAlignment="Stretch" Margin="5,0,5,5">
+                                    <ComboBoxItem>PNG</ComboBoxItem>
+                                    <ComboBoxItem>JPG</ComboBoxItem>
+                                    <ComboBoxItem>GIF</ComboBoxItem>
+                                    <ComboBoxItem>WEBP</ComboBoxItem>
+                                    <ComboBoxItem>ICO</ComboBoxItem>
+                                    <ComboBoxItem>MP3</ComboBoxItem>
+                                    <ComboBoxItem>MP4</ComboBoxItem>
+                                    <ComboBoxItem>FLAC</ComboBoxItem>
+                                    <ComboBoxItem>WAV</ComboBoxItem>
+                                    <ComboBoxItem>OGG</ComboBoxItem>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2">
+                                <TextBlock Margin="5,15,5,0" HorizontalAlignment="Center" Foreground="White"
+                                           FontSize="14">
+                                    Compression %
+                                </TextBlock>
+                                <TextBlock Text="{Binding #slider.Value}"
+                                           HorizontalAlignment="Center" />
+                                <Slider x:Name="slider" Width="250" />
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Grid.Row="1" Margin="0, 20,0,0">
+                            <Button Content="Convert" Background="White" Foreground="Black" BorderThickness="1"
+                                    BorderBrush="Black" Command="{Binding GenerateFileSelectCommand}"
+                                    HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5, 5, 5, 5"
+                                    Height="50" FontWeight="Black" FontSize="25" HorizontalContentAlignment="Center" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Margin="0, 0,0,0">
+                            <Button Content="Open Output Folder" Background="White" Foreground="Black" BorderThickness="1"
+                                    BorderBrush="Black" Command="{Binding OpenLastOutputFolderCommand}"
+                                    HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5, 5, 5, 5"
+                                    Height="25" FontWeight="Black" FontSize="10" HorizontalContentAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+
+
+                </Grid>
+
+            </Grid>
         </Grid>
         <!-- End of primary content !-->
-        
-        <Grid Grid.Row="2" Margin="5" Background="SlateGray" ColumnDefinitions="Auto, Auto, *, Auto, Auto, Auto, Auto, Auto">
- 
-        </Grid>
-        
-        </Grid>
-        
-  
+
+
+    </Grid>
+
+
 </Window>
