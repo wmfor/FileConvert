@@ -23,6 +23,7 @@
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10"/>
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10"/>
+        <PackageReference Include="Material.Avalonia" Version="3.4.3-nightly.0.10" />
     </ItemGroup>
 
     <ItemGroup>
@@ -42,5 +43,21 @@
       <UpToDateCheckInput Remove="Assets\Fonts\Nunito-Regular.ttf" />
       <UpToDateCheckInput Remove="Assets\Fonts\Nunito-SemiBold.ttf" />
       <UpToDateCheckInput Remove="Assets\Fonts\Nunito-SemiBoldItalic.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-Black.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-BlackItalic.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-Bold.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-BoldItalic.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-ExtraBold.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-ExtraBoldItalic.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-ExtraLight.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-ExtraLightItalic.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-Italic.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-Light.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-LightItalic.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-Medium.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-MediumItalic.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-Regular.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-SemiBold.ttf" />
+      <UpToDateCheckInput Remove="Assets\Fonts\SourceSans\SourceSans3-SemiBoldItalic.ttf" />
     </ItemGroup>
 </Project>

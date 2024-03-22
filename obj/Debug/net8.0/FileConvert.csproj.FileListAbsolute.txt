@@ -261,3 +261,7 @@ C:\GITHUB\2. Applications\FileConvert\FileConvert\obj\Debug\net8.0\FileConvert.p
 C:\GITHUB\2. Applications\FileConvert\FileConvert\obj\Debug\net8.0\FileConv.B977DF46.Up2Date
 C:\GITHUB\2. Applications\FileConvert\FileConvert\obj\Debug\net8.0\FileConvert.genruntimeconfig.cache
 C:\GITHUB\2. Applications\FileConvert\FileConvert\obj\Debug\net8.0\ref\FileConvert.dll
+C:\GITHUB\2. Applications\FileConvert\FileConvert\bin\Debug\net8.0\Material.Avalonia.dll
+C:\GITHUB\2. Applications\FileConvert\FileConvert\bin\Debug\net8.0\Material.Colors.dll
+C:\GITHUB\2. Applications\FileConvert\FileConvert\bin\Debug\net8.0\Material.Ripple.dll
+C:\GITHUB\2. Applications\FileConvert\FileConvert\bin\Debug\net8.0\Material.Styles.dll

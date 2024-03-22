@@ -38,13 +38,15 @@ public class MainWindowViewModel : ViewModelBase
     
     public string SelectedFileName = ""; //What the raw name of the selected file is e.g "FileName", or "MyFileWestonForbes", etc.
     public string SelectedFileType = ""; //What the selected file's type is e.g. png, jpg, etc.
-
+    
 
     private string _DataConversionType; //A string that holds the conversion type in plaintext (e.g. (PNG to GIF), (MP4 to MP3), etc etc.)
     private string? _SelectedFilePath = ""; //The full path to the selected file.
     private int _SelectedConversionTypeIndex; //The index of the dropdown option that is currently selected.
     private string _SelectedConversionType; //The literal type of the selected dropdown type (e.g. png, jpg, mp3, etc)
+    private string _SelectedFileNameWithType;
     
+    public string SelectedFileNameWithType { get => _SelectedFileNameWithType; set =>this.RaiseAndSetIfChanged(ref _SelectedFileNameWithType, value); } //The file's name with the type extension, e.g filename.ogg, or myfile.mp3.
     public string DataConversionType
     {
         get => _DataConversionType;
@@ -54,8 +56,12 @@ public class MainWindowViewModel : ViewModelBase
     //The path you've selected for the file you wish to convert.
     public string? SelectedFilePath
     {
-        get => _SelectedFilePath; 
-        set => this.RaiseAndSetIfChanged(ref _SelectedFilePath, value);
+        get => _SelectedFilePath;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _SelectedFilePath, value);
+            SelectedFileNameWithType = SelectedFilePath.Split('/').Last();
+        }
     }
     
     //This is used to get the string value of the combobox for output type options.
@@ -109,6 +115,15 @@ public class MainWindowViewModel : ViewModelBase
         OpenSettingsSelectCommand = ReactiveCommand.Create(OpenSettingsWindow);
         GenerateFileSelectCommand = ReactiveCommand.Create(GenerateFile);
         OpenLastOutputFolderCommand = ReactiveCommand.Create(OpenFolderWindow);
+        
+        _SettingsInstanceViewModel = new SettingsWindowViewModel();
+
+        SettingsInstance = new SettingsWindow
+        {
+            DataContext = _SettingsInstanceViewModel
+        };
+        _SettingsInstanceViewModel.MainWindowViewModel = this;
+        SettingsInstance.Hide();
     }
 
     private WindowBase GetTopLevel()
@@ -127,61 +142,57 @@ public class MainWindowViewModel : ViewModelBase
     private void OpenSettingsWindow()
     {
         //If the settings window is already visible, hide it.
-        if (SettingsInstance != null && SettingsInstance.IsVisible)
+        if (SettingsInstance.IsVisible)
         {
-            Console.WriteLine("Window is already visible, hide it.");
-            CloseSettingsWindow();
+            SettingsInstance.Hide();
         }
-        
         //If the settings window hasn't been instantiated yet, create it.
-        else if (SettingsInstance == null || !SettingsInstance.IsVisible)
+        else if (!SettingsInstance.IsVisible)
         {
-            Console.WriteLine("Window hasn't been made yet, create it.");
-            
-            CloseSettingsWindow();
-
-            if(_SettingsInstanceViewModel == null)
-                _SettingsInstanceViewModel = new SettingsWindowViewModel();
-
-            SettingsInstance = new SettingsWindow
-            {
-                DataContext = _SettingsInstanceViewModel
-            };
-
-            _SettingsInstanceViewModel.MainWindowViewModel = this;
-            
             SettingsInstance.Show();
         }
     }
-    
-    //Called by clicking on the 'Settings' button while the window is open.
-    private void CloseSettingsWindow()
-    {
-        if (SettingsInstance == null)
-        {
-            Console.WriteLine("ERROR | Tried to close settings window while it doesn't exist!");
-            return;
-        }
-        
-        SettingsInstance.Close();
-        SettingsInstance = null;
-    }
+
 
 
     private void OpenFolderWindow()
     {
-        if (Directory.Exists(_SelectedFilePath))
+        string realDirectory = "";
+        
+        string[] splitStrings = _SelectedFilePath!.Split('/');
+       
+        if (_SelectedFilePath.Length > 3)
+        {
+            for (int i = 0; i < splitStrings.Length-1; i++)
+            {
+                realDirectory += splitStrings[i];
+            
+                if(i != splitStrings.Length-2)
+                    realDirectory += "\\";
+            }
+        }
+        else
+        {
+            Console.Write("Directory does not exist!");
+            return;
+        }
+        
+        
+        if (Directory.Exists(realDirectory))
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                Arguments = _SelectedFilePath,
+                Arguments = realDirectory,
                 FileName = "explorer.exe"
             };
 
             Process.Start(startInfo);
+            Console.WriteLine(realDirectory);
         }
         else
         {
+            
+            Console.WriteLine(realDirectory);
             Console.Write("Directory does not exist!");
         }
     }
@@ -262,6 +273,9 @@ public class MainWindowViewModel : ViewModelBase
     {
         bool doesContainDuplicateSpecificName = false;
         bool doesContainDuplicateSameName = false;
+        
+        if(_SettingsInstanceViewModel == null)
+            Console.WriteLine("View Model NULL!!!!");
         
         //Get all files in the chosen output directory.
         foreach (string file in Directory.GetFiles(outputFilePath))

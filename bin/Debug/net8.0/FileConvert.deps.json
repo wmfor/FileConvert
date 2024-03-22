@@ -13,7 +13,8 @@
           "Avalonia.Diagnostics": "11.0.10",
           "Avalonia.Fonts.Inter": "11.0.10",
           "Avalonia.ReactiveUI": "11.0.10",
-          "Avalonia.Themes.Fluent": "11.0.10"
+          "Avalonia.Themes.Fluent": "11.0.10",
+          "Material.Avalonia": "3.4.3-nightly.0.10"
         },
         "runtime": {
           "FileConvert.dll": {}
@@ -347,6 +348,29 @@
             "rid": "win-x86",
             "assetType": "native",
             "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Material.Avalonia/3.4.3-nightly.0.10": {
+        "dependencies": {
+          "Avalonia": "11.0.10"
+        },
+        "runtime": {
+          "lib/net8.0/Material.Avalonia.dll": {
+            "assemblyVersion": "3.4.3.0",
+            "fileVersion": "3.4.3.0"
+          },
+          "lib/net8.0/Material.Colors.dll": {
+            "assemblyVersion": "3.4.3.0",
+            "fileVersion": "3.4.3.0"
+          },
+          "lib/net8.0/Material.Ripple.dll": {
+            "assemblyVersion": "3.4.3.0",
+            "fileVersion": "3.4.3.0"
+          },
+          "lib/net8.0/Material.Styles.dll": {
+            "assemblyVersion": "3.4.3.0",
+            "fileVersion": "3.4.3.0"
           }
         }
       },
@@ -1094,6 +1118,13 @@
       "sha512": "sha512-ulEewLMk+dNmbmpy15ny/YusI6JNUWqchF080TV2jgfFBXPXjWm767JleDi/S7hp8eDeEN6GYIIxpvNr5fLvIw==",
       "path": "harfbuzzsharp.nativeassets.win32/7.3.0",
       "hashPath": "harfbuzzsharp.nativeassets.win32.7.3.0.nupkg.sha512"
+    },
+    "Material.Avalonia/3.4.3-nightly.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xFje4rHvpwMHOkYFyru/mssc7CD+TaJugA7BeU98IE6QJwKZTm7GN4GAIUl7vywlgeYurnOCJZlfqEn2yCdQGA==",
+      "path": "material.avalonia/3.4.3-nightly.0.10",
+      "hashPath": "material.avalonia.3.4.3-nightly.0.10.nupkg.sha512"
     },
     "MicroCom.Runtime/0.11.0": {
       "type": "package",

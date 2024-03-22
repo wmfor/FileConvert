@@ -24,6 +24,10 @@ C:\Users\westo\.nuget\packages\avalonia.win32\11.0.10\lib\net6.0\Avalonia.Win32.
 C:\Users\westo\.nuget\packages\avalonia.x11\11.0.10\lib\net6.0\Avalonia.X11.dll
 C:\Users\westo\.nuget\packages\dynamicdata\7.9.5\lib\net6.0\DynamicData.dll
 C:\Users\westo\.nuget\packages\harfbuzzsharp\7.3.0\lib\net6.0\HarfBuzzSharp.dll
+C:\Users\westo\.nuget\packages\material.avalonia\3.4.3-nightly.0.10\lib\net8.0\Material.Avalonia.dll
+C:\Users\westo\.nuget\packages\material.avalonia\3.4.3-nightly.0.10\lib\net8.0\Material.Colors.dll
+C:\Users\westo\.nuget\packages\material.avalonia\3.4.3-nightly.0.10\lib\net8.0\Material.Ripple.dll
+C:\Users\westo\.nuget\packages\material.avalonia\3.4.3-nightly.0.10\lib\net8.0\Material.Styles.dll
 C:\Users\westo\.nuget\packages\microcom.runtime\0.11.0\lib\net5.0\MicroCom.Runtime.dll
 C:\Users\westo\.nuget\packages\microsoft.codeanalysis.csharp\3.8.0\lib\netcoreapp3.1\Microsoft.CodeAnalysis.CSharp.dll
 C:\Users\westo\.nuget\packages\microsoft.codeanalysis.csharp.scripting\3.8.0\lib\netcoreapp3.1\Microsoft.CodeAnalysis.CSharp.Scripting.dll

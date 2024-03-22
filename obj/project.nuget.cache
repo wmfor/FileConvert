@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "8fE7a8XqdlPBJHhBJt/mSat1osmOFcALLZsvW9Xy1BXC1jN1vkE13Rvn/0Wokb96bgI4pNbi9loaH7aYWhFOmA==",
+  "dgSpecHash": "13zkN9bxRvTKwGONcGhnfUxMIWbxYuLWP8vqeG3XdPA//kcMKVPkHJsrL+V49g18MCXFvZeZeH5Wv8/fPT8c1w==",
   "success": true,
   "projectFilePath": "C:\\GITHUB\\2. Applications\\FileConvert\\FileConvert\\FileConvert.csproj",
   "expectedPackageFiles": [
@@ -27,6 +27,7 @@
     "C:\\Users\\westo\\.nuget\\packages\\harfbuzzsharp.nativeassets.macos\\7.3.0\\harfbuzzsharp.nativeassets.macos.7.3.0.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\harfbuzzsharp.nativeassets.webassembly\\7.3.0\\harfbuzzsharp.nativeassets.webassembly.7.3.0.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\harfbuzzsharp.nativeassets.win32\\7.3.0\\harfbuzzsharp.nativeassets.win32.7.3.0.nupkg.sha512",
+    "C:\\Users\\westo\\.nuget\\packages\\material.avalonia\\3.4.3-nightly.0.10\\material.avalonia.3.4.3-nightly.0.10.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\microcom.runtime\\0.11.0\\microcom.runtime.0.11.0.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.0.0\\microsoft.codeanalysis.analyzers.3.0.0.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\microsoft.codeanalysis.common\\3.8.0\\microsoft.codeanalysis.common.3.8.0.nupkg.sha512",

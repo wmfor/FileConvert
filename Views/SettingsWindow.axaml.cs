@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using FileConvert.ViewModels;
 using ReactiveUI;
 
@@ -30,6 +31,8 @@ public partial class SettingsWindow : Window
         _SameNameCheckbox = this.FindControl<CheckBox>("SameCheckBox");
         _SpecificNameCheckbox = this.FindControl<CheckBox>("SpecificCheckBox");
         _RandomNameCheckbox = this.FindControl<CheckBox>("RandomCheckBox");
+        
+        UpdateCheckboxUI("RandomCheckBox");
     }
 
 
@@ -38,7 +41,7 @@ public partial class SettingsWindow : Window
         if (sender is not TextBox textBox)
             return;
 
-        (DataContext as SettingsWindowViewModel)!.SpecificName = textBox.Text;
+        (DataContext as SettingsWindowViewModel)!.SpecificName = textBox.Text; 
     }
     
     //When you check a checkbox.
@@ -58,27 +61,29 @@ public partial class SettingsWindow : Window
         bool isChecked = (bool)checkBox.IsChecked!;
         string? checkBoxName = checkBox.Name;
 
-        _SameNameCheckbox!.IsChecked = false;
-        _SpecificNameCheckbox!.IsChecked = false;
-        _RandomNameCheckbox!.IsChecked = false;
-            
-        switch (checkBoxName)
-        {
-            case "SameCheckBox":
-                _SameNameCheckbox.IsChecked = true;
-                break;
-            case "SpecificCheckBox":
-                _SpecificNameCheckbox.IsChecked = true;
-                break;
-            case "RandomCheckBox":
-                _RandomNameCheckbox.IsChecked = true;
-                break;
-        }
-
+        UpdateCheckboxUI(checkBoxName!);
+        
         //If it's set to checked, pass the checked box, otherwise pass default to reset all.
         (DataContext as SettingsWindowViewModel)!.SelectFileNameOption(isChecked ? checkBoxName : default);
          
         _IsProcessingCheckboxChanges = false; //End the operation.
+    }
+
+    private void UpdateCheckboxUI(string selectedCheckBoxName)
+    {
+        _SameNameCheckbox!.IsChecked = selectedCheckBoxName == "SameCheckBox";
+        _SpecificNameCheckbox!.IsChecked = selectedCheckBoxName == "SpecificCheckBox";
+        _RandomNameCheckbox!.IsChecked = selectedCheckBoxName == "RandomCheckBox";
+        
+        SpecificNameTextBox.IsVisible = selectedCheckBoxName == "SpecificCheckBox";
+        
+        _SameNameCheckbox.FontSize = selectedCheckBoxName == "SameCheckBox" ? 22 : 16;
+        _SpecificNameCheckbox.FontSize = selectedCheckBoxName == "SpecificCheckBox" ? 22 : 16;
+        _RandomNameCheckbox.FontSize = selectedCheckBoxName == "RandomCheckBox" ? 22 : 16;
+        
+        _RandomNameCheckbox.FontWeight = selectedCheckBoxName == "SameCheckBox" ? FontWeight.DemiBold : FontWeight.Normal;
+        _SpecificNameCheckbox.FontWeight = selectedCheckBoxName == "SpecificCheckBox" ? FontWeight.DemiBold : FontWeight.Normal;
+        _SameNameCheckbox.FontWeight = selectedCheckBoxName == "RandomCheckBox" ? FontWeight.DemiBold : FontWeight.Normal;
     }
     
 }

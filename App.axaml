@@ -1,5 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
              x:Class="FileConvert.App"
              xmlns:local="using:FileConvert"
              RequestedThemeVariant="Default">
@@ -10,6 +11,10 @@
     </Application.DataTemplates>
   
     <Application.Styles>
-        <FluentTheme />
+        <themes:MaterialTheme PrimaryColor="BlueGrey" SecondaryColor="Blue"/>
     </Application.Styles>
+             
+             <Application.Resources>
+                 <FontFamily x:Key="NunitoFont">avares://FileConvert/Assets/Fonts/Nunito#Nunito</FontFamily>
+             </Application.Resources>
 </Application>

@@ -63,6 +63,10 @@
             "Avalonia.Themes.Fluent": {
               "target": "Package",
               "version": "[11.0.10, )"
+            },
+            "Material.Avalonia": {
+              "target": "Package",
+              "version": "[3.4.3-nightly.0.10, )"
             }
           },
           "imports": [

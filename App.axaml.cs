@@ -1,6 +1,9 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Fonts.Inter;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Avalonia.Media.Fonts;
 using FileConvert.ViewModels;
 using FileConvert.Views;
 
@@ -25,5 +28,6 @@ public partial class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
+
     
 }

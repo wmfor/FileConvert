@@ -20,9 +20,10 @@
 
     <!-- The header section UI !-->
     <Grid RowDefinitions="Auto, *, Auto">
-        <Grid Grid.Row="0" Background="DimGray" Height="25" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
-            <Button Grid.Column="2" Command="{Binding OpenSettingsSelectCommand}" Width="25" Height="25" Margin="425,0,0,0">
-                <Image Source="../Assets/SettingsIcon.png" Width="60" Height="20"></Image>
+        <Grid Grid.Row="0" Background="DimGray" Height="30" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+            <Button Grid.Column="2" Command="{Binding OpenSettingsSelectCommand}" Width="30" Height="25"
+                    Margin="415,0,0,0">
+                <Image Source="../Assets/SettingsIcon.png" Width="80" Height="20"></Image>
             </Button>
 
         </Grid>
@@ -34,82 +35,135 @@
 
                 <Grid Grid.Column="0" Background="DimGray">
                     <Grid RowDefinitions="Auto, Auto, Auto">
-                        <Border Grid.Row="0" Background="DarkGray" BorderBrush="Black" BorderThickness="1" Width="160" Height="160">
+                        <Border Grid.Row="0" Background="DarkGray" BorderBrush="Black" BorderThickness="1" Width="160"
+                                Height="160">
                             <Image x:Name="SelectedImage" Source="../Assets/TypeConvert_Logo.ico" Width="140"
                                    Margin="5,5,5,5">
                             </Image>
                         </Border>
-                        
-                        <Label Grid.Row="1" Content="{Binding SelectedFilePath , Mode=TwoWay}" Foreground="White"
+
+                        <Label Grid.Row="1" Content="{Binding SelectedFileNameWithType, Mode=TwoWay}"
+                               FontFamily="{StaticResource NunitoFont}" 
+                               Foreground="White"
                                Name="SelectedFilePathText" HorizontalAlignment="Center" FontSize="10" />
-                        
+
                         <Label HorizontalAlignment="Center" Grid.Row="2" Foreground="White" Name="ConversionTypeLabel"
-                               Content="{Binding DataConversionType, Mode=TwoWay}" FontSize="20" />
-                        
+                               Content="{Binding DataConversionType, Mode=TwoWay}" FontFamily="{StaticResource NunitoFont}"  FontSize="20" />
+
                     </Grid>
                 </Grid>
 
                 <Grid Grid.Column="1">
                     <Grid RowDefinitions="Auto, Auto, Auto">
                         <Grid RowDefinitions="Auto, Auto, Auto">
-                            <StackPanel Grid.Row="0" Margin="0, 15,0,5">
-                                <TextBlock Margin="5 0,5,0" HorizontalAlignment="Center" Foreground="White"
+                            <StackPanel Grid.Row="0" Margin="0, 15,0,10" Background="#292929">
+                                <TextBlock Margin="5 5,5,0" HorizontalAlignment="Center" Foreground="White" FontFamily="{StaticResource NunitoFont}" 
                                            FontSize="14">
-                                    Select the file you wish to convert.
+                                    Select File.
                                 </TextBlock>
-                                <Button Content="Select File" Width="250" BorderThickness="1"
+                                <Button Content="Select File" Width="150" BorderThickness="1"
                                         BorderBrush="AntiqueWhite" Foreground="Black" Click="OnSelectFileButtonClicked"
                                         HorizontalAlignment="Stretch"
-                                        Margin="5" HorizontalContentAlignment="Center" />
+                                        Margin="5" HorizontalContentAlignment="Center" FontFamily="{StaticResource NunitoFont}"  />
                             </StackPanel>
 
-                            <StackPanel Grid.Row="1" Margin="0, 0,0,5">
+                            <StackPanel Grid.Row="1" Margin="0, 0,0,10" Background="#292929">
 
-                                <TextBlock Margin="0 15,5,5" HorizontalAlignment="Center" Foreground="White"
-                                           FontSize="14">
-                                    Select your desired output file type
+                                <TextBlock Margin="0 5,5,5" HorizontalAlignment="Center" Foreground="White"
+                                           FontSize="14" FontFamily="{StaticResource NunitoFont}" >
+                                    Output Type
                                 </TextBlock>
 
-                                <ComboBox Name="FileTypeComboBox" Width="250"
+                                <ComboBox Name="FileTypeComboBox" Width="150"
                                           SelectionChanged="OnComboBoxChangeSelected" FontWeight="Black" FontSize="14"
                                           SelectedIndex="{Binding SelectedConversionTypeIndex}"
                                           HorizontalContentAlignment="Center" MaxDropDownHeight="400"
                                           HorizontalAlignment="Stretch" Margin="5,0,5,5">
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/PhotoIcon.png"  Width="30"/><Label Content="PNG" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/PhotoIcon.png"  Width="30"/><Label Content="JPG" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/PhotoIcon.png"  Width="30"/><Label Content="WEBP" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/PhotoIcon.png"  Width="30"/><Label Content="ICO" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/AudioIcon.png"  Width="30"/><Label Content="MP3" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/AudioIcon.png" Width="30"/><Label Content="FLAC" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/AudioIcon.png" Width="30"/><Label Content="WAV" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/AudioIcon.png" Width="30"/><Label Content="OGG" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/VideoIcon.png" Width="30"/><Label Content="MP4" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
-                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/VideoIcon.png"  Width="30"/><Label Content="GIF" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/PhotoIcon.png" Width="30" />
+                                            <Label Content="PNG" FontFamily="{StaticResource NunitoFont}"  HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/PhotoIcon.png" Width="30" />
+                                            <Label Content="JPG" FontFamily="{StaticResource NunitoFont}"   HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/PhotoIcon.png" Width="30" />
+                                            <Label Content="WEBP" FontFamily="{StaticResource NunitoFont}"  HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/PhotoIcon.png" Width="30" />
+                                            <Label Content="ICO" FontFamily="{StaticResource NunitoFont}"  HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/AudioIcon.png" Width="30" />
+                                            <Label Content="MP3" FontFamily="{StaticResource NunitoFont}"  HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/AudioIcon.png" Width="30" />
+                                            <Label Content="FLAC" FontFamily="{StaticResource NunitoFont}"  HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/AudioIcon.png" Width="30" />
+                                            <Label Content="WAV" FontFamily="{StaticResource NunitoFont}"  HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/AudioIcon.png" Width="30" />
+                                            <Label Content="OGG" FontFamily="{StaticResource NunitoFont}"  HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/VideoIcon.png" Width="30" />
+                                            <Label Content="MP4" FontFamily="{StaticResource NunitoFont}"  HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem>
+                                        <StackPanel>
+                                            <Image Source="../Assets/FileTypes/VideoIcon.png" Width="30" />
+                                            <Label Content="GIF" FontFamily="{StaticResource NunitoFont}"  HorizontalAlignment="Center"></Label>
+                                        </StackPanel>
+                                    </ComboBoxItem>
                                 </ComboBox>
                             </StackPanel>
 
-                            <StackPanel Grid.Row="2">
-                                <TextBlock Margin="5,5,5,0" HorizontalAlignment="Center" Foreground="White"
+                            <StackPanel Grid.Row="2" Background="#292929" Height="70">
+                                <TextBlock Margin="5,5,5,5" HorizontalAlignment="Center" Foreground="White" FontFamily="{StaticResource NunitoFont}" 
                                            FontSize="14">
                                     Compression %
                                 </TextBlock>
-                                <TextBlock Text="{Binding #slider.Value}"
+                                <TextBlock Text="{Binding #slider.Value}" FontFamily="{StaticResource NunitoFont}" 
                                            HorizontalAlignment="Center" />
-                                <Slider x:Name="slider" Width="250" />
+                                <Slider x:Name="slider" Width="150" Margin="0,0,0,0" />
                             </StackPanel>
                         </Grid>
-                        <StackPanel Grid.Row="1" Margin="0, 0,0,0">
-                            <Button Content="Convert" Background="White" Foreground="Black" BorderThickness="1"
+                        <StackPanel Grid.Row="1" Margin="0, 18,0,0">
+                            <Button Content="Convert" Background="White" Foreground="Black" BorderThickness="1" FontFamily="{StaticResource NunitoFont}" 
                                     BorderBrush="Black" Command="{Binding GenerateFileSelectCommand}"
                                     HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5, 5, 5, 5"
                                     Height="50" FontWeight="Black" FontSize="25" HorizontalContentAlignment="Center" />
                         </StackPanel>
                         <StackPanel Grid.Row="2" Margin="0, 0,0,0">
-                            <Button Content="Open Output Folder" Background="White" Foreground="Black"
+                            <Button Content="Open Output Folder" Background="White" Foreground="Black" FontFamily="{StaticResource NunitoFont}" 
                                     BorderThickness="1"
                                     BorderBrush="Black" Command="{Binding OpenLastOutputFolderCommand}"
                                     HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5, 5, 5, 5"
-                                    Height="25" FontWeight="Black" FontSize="10" HorizontalContentAlignment="Center" />
+                                    Height="30" FontWeight="Black" FontSize="10" HorizontalContentAlignment="Center" />
                         </StackPanel>
                     </Grid>
 
