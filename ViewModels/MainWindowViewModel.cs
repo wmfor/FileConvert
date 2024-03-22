@@ -19,14 +19,14 @@ internal enum ConversionType
 {
     PNG,
     JPG,
-    GIF,
     WEBP,
     ICO,
     MP3,
-    MP4,
     FLAC,
     WAV,
     OGG,
+    MP4,
+    GIF
 }
 
 public class MainWindowViewModel : ViewModelBase
@@ -35,12 +35,15 @@ public class MainWindowViewModel : ViewModelBase
 
 
 
-    private string? _selectedFilePath = ""; //The full path to the seleced file.
-    private string _selectedFileName = ""; //What the raw name of the selected file is e.g "FileName", or "MyFileWestonForbes", etc.
+    
+    public string SelectedFileName = ""; //What the raw name of the selected file is e.g "FileName", or "MyFileWestonForbes", etc.
     public string SelectedFileType = ""; //What the selected file's type is e.g. png, jpg, etc.
 
 
-    private string _DataConversionType;
+    private string _DataConversionType; //A string that holds the conversion type in plaintext (e.g. (PNG to GIF), (MP4 to MP3), etc etc.)
+    private string? _SelectedFilePath = ""; //The full path to the selected file.
+    private int _SelectedConversionTypeIndex; //The index of the dropdown option that is currently selected.
+    private string _SelectedConversionType; //The literal type of the selected dropdown type (e.g. png, jpg, mp3, etc)
     
     public string DataConversionType
     {
@@ -51,11 +54,10 @@ public class MainWindowViewModel : ViewModelBase
     //The path you've selected for the file you wish to convert.
     public string? SelectedFilePath
     {
-        get => _selectedFilePath; 
-        set => this.RaiseAndSetIfChanged(ref _selectedFilePath, value);
+        get => _SelectedFilePath; 
+        set => this.RaiseAndSetIfChanged(ref _SelectedFilePath, value);
     }
     
-
     //This is used to get the string value of the combobox for output type options.
     public string SelectedConversionType
     {
@@ -63,7 +65,6 @@ public class MainWindowViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref _SelectedConversionType, value);
-            SelectedConversionTypeIndex = (int)Enum.Parse(typeof(ConversionType), _SelectedConversionType);
             Console.WriteLine("Selected Type Changed To " + _SelectedConversionType);
         }
     }
@@ -76,16 +77,13 @@ public class MainWindowViewModel : ViewModelBase
         {
             this.RaiseAndSetIfChanged(ref _SelectedConversionTypeIndex, value);
             Console.WriteLine("Selected Conversion Index Changed To " + _SelectedConversionTypeIndex);
+
+            SelectedConversionType = ((ConversionType)SelectedConversionTypeIndex).ToString();
         }
     }
-    private int _SelectedConversionTypeIndex;
 
-
-
-    private string _SelectedConversionType;
     
     
-    public ICommand OpenFileSelectCommand { get; }
     public ICommand OpenSettingsSelectCommand { get; }
     public ICommand GenerateFileSelectCommand { get; }
     public ICommand OpenLastOutputFolderCommand { get; }
@@ -94,7 +92,7 @@ public class MainWindowViewModel : ViewModelBase
     
     
     //The instance of the settings window.
-    public SettingsWindow? SettingsInstance;
+    private SettingsWindow? SettingsInstance;
     private SettingsWindowViewModel? _SettingsInstanceViewModel;
 
   
@@ -106,8 +104,8 @@ public class MainWindowViewModel : ViewModelBase
     //Window Constructor.
     public MainWindowViewModel()
     {
-        _SelectedConversionType = "PNG";
-        OpenFileSelectCommand = ReactiveCommand.Create(OpenFileSelectWindow);
+        SelectedConversionTypeIndex = 0; //Default conversion type. (PNG)
+
         OpenSettingsSelectCommand = ReactiveCommand.Create(OpenSettingsWindow);
         GenerateFileSelectCommand = ReactiveCommand.Create(GenerateFile);
         OpenLastOutputFolderCommand = ReactiveCommand.Create(OpenFolderWindow);
@@ -121,31 +119,6 @@ public class MainWindowViewModel : ViewModelBase
         return null;
     }
     
-    
-    //Will be called once the select file button is pressed.
-    private async void OpenFileSelectWindow()
-    {
-        // Start async operation to open the dialog.
-        IReadOnlyList<IStorageFile> files = await GetTopLevel().StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Select File to Convert",
-            AllowMultiple = false
-        });
-
-
-        if (files.Count != 1)
-            return;
-        
-        SelectedFilePath = files[0].Path.ToString().Remove(0,8);
-        
-        string rawName = _selectedFilePath.Split('/').Last().Split('.').First();
-        string fileType = _selectedFilePath.Split('/').Last().Split('.').Last();
-
-        _selectedFileName = rawName;
-        SelectedFileType = fileType;
-        
-        
-    }
 
    
     
@@ -197,11 +170,11 @@ public class MainWindowViewModel : ViewModelBase
 
     private void OpenFolderWindow()
     {
-        if (Directory.Exists(_selectedFilePath))
+        if (Directory.Exists(_SelectedFilePath))
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                Arguments = _selectedFilePath,
+                Arguments = _SelectedFilePath,
                 FileName = "explorer.exe"
             };
 
@@ -217,7 +190,7 @@ public class MainWindowViewModel : ViewModelBase
     //Called via the 'Generate' button.
     private async void GenerateFile()
     {
-        if (_selectedFilePath == null || _selectedFilePath.Length <= 3)
+        if (_SelectedFilePath == null || _SelectedFilePath.Length <= 3)
         {
             Console.WriteLine("ERROR | Must select file!");
             return;
@@ -244,7 +217,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             //Replace this with docker running it, research it...
             
-            string runCommand = "cd " + outputFilePath + " && ffmpeg -i " + _selectedFilePath + " " + outputFileName + $".{SelectedConversionType.ToLower()}";
+            string runCommand = "cd " + outputFilePath + " && ffmpeg -i " + _SelectedFilePath + " " + outputFileName + $".{SelectedConversionType.ToLower()}";
             RunCMDCommand(runCommand, true);
             Console.WriteLine(runCommand);
         }
@@ -314,7 +287,7 @@ public class MainWindowViewModel : ViewModelBase
         }
         else if (_SettingsInstanceViewModel.IsSameNameSelected)         // SAME NAME
         {
-            outputFileName = doesContainDuplicateSameName ? $"{_selectedFileName}{Guid.NewGuid()}" : _selectedFileName;
+            outputFileName = doesContainDuplicateSameName ? $"{SelectedFileName}{Guid.NewGuid()}" : SelectedFileName;
         }
         else if (_SettingsInstanceViewModel.IsSpecificNameSelected)     //SPECIFIC NAME
         {

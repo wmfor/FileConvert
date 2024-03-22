@@ -21,10 +21,10 @@
     <!-- The header section UI !-->
     <Grid RowDefinitions="Auto, *, Auto">
         <Grid Grid.Row="0" Background="DimGray" Height="25" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
-            <Button Grid.Column="0" Command="{Binding OpenSettingsSelectCommand}" Width="25" Height="25">
+            <Button Grid.Column="2" Command="{Binding OpenSettingsSelectCommand}" Width="25" Height="25" Margin="425,0,0,0">
                 <Image Source="../Assets/SettingsIcon.png" Width="60" Height="20"></Image>
             </Button>
-            
+
         </Grid>
         <!-- End of header section !-->
 
@@ -34,11 +34,18 @@
 
                 <Grid Grid.Column="0" Background="DimGray">
                     <Grid RowDefinitions="Auto, Auto, Auto">
-                        <Image Grid.Row="0" x:Name="SelectedImage" Source="../Assets/TypeConvert_Logo.ico" Width="140" Margin="5,5,5,5"></Image>
+                        <Border Grid.Row="0" Background="DarkGray" BorderBrush="Black" BorderThickness="1" Width="160" Height="160">
+                            <Image x:Name="SelectedImage" Source="../Assets/TypeConvert_Logo.ico" Width="140"
+                                   Margin="5,5,5,5">
+                            </Image>
+                        </Border>
+                        
                         <Label Grid.Row="1" Content="{Binding SelectedFilePath , Mode=TwoWay}" Foreground="White"
                                Name="SelectedFilePathText" HorizontalAlignment="Center" FontSize="10" />
+                        
                         <Label HorizontalAlignment="Center" Grid.Row="2" Foreground="White" Name="ConversionTypeLabel"
                                Content="{Binding DataConversionType, Mode=TwoWay}" FontSize="20" />
+                        
                     </Grid>
                 </Grid>
 
@@ -51,8 +58,8 @@
                                     Select the file you wish to convert.
                                 </TextBlock>
                                 <Button Content="Select File" Width="250" BorderThickness="1"
-                                        BorderBrush="AntiqueWhite" Foreground="Black" Click="OnSelectFileButtonClicked" 
-                                        Command="{Binding OpenFileSelectCommand}" HorizontalAlignment="Stretch"
+                                        BorderBrush="AntiqueWhite" Foreground="Black" Click="OnSelectFileButtonClicked"
+                                        HorizontalAlignment="Stretch"
                                         Margin="5" HorizontalContentAlignment="Center" />
                             </StackPanel>
 
@@ -68,21 +75,21 @@
                                           SelectedIndex="{Binding SelectedConversionTypeIndex}"
                                           HorizontalContentAlignment="Center" MaxDropDownHeight="400"
                                           HorizontalAlignment="Stretch" Margin="5,0,5,5">
-                                    <ComboBoxItem>PNG</ComboBoxItem>
-                                    <ComboBoxItem>JPG</ComboBoxItem>
-                                    <ComboBoxItem>GIF</ComboBoxItem>
-                                    <ComboBoxItem>WEBP</ComboBoxItem>
-                                    <ComboBoxItem>ICO</ComboBoxItem>
-                                    <ComboBoxItem>MP3</ComboBoxItem>
-                                    <ComboBoxItem>MP4</ComboBoxItem>
-                                    <ComboBoxItem>FLAC</ComboBoxItem>
-                                    <ComboBoxItem>WAV</ComboBoxItem>
-                                    <ComboBoxItem>OGG</ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/PhotoIcon.png"  Width="30"/><Label Content="PNG" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/PhotoIcon.png"  Width="30"/><Label Content="JPG" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/PhotoIcon.png"  Width="30"/><Label Content="WEBP" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/PhotoIcon.png"  Width="30"/><Label Content="ICO" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/AudioIcon.png"  Width="30"/><Label Content="MP3" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/AudioIcon.png" Width="30"/><Label Content="FLAC" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/AudioIcon.png" Width="30"/><Label Content="WAV" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/AudioIcon.png" Width="30"/><Label Content="OGG" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/VideoIcon.png" Width="30"/><Label Content="MP4" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
+                                    <ComboBoxItem><StackPanel><Image Source="../Assets/FileTypes/VideoIcon.png"  Width="30"/><Label Content="GIF" HorizontalAlignment="Center"></Label></StackPanel></ComboBoxItem>
                                 </ComboBox>
                             </StackPanel>
 
                             <StackPanel Grid.Row="2">
-                                <TextBlock Margin="5,15,5,0" HorizontalAlignment="Center" Foreground="White"
+                                <TextBlock Margin="5,5,5,0" HorizontalAlignment="Center" Foreground="White"
                                            FontSize="14">
                                     Compression %
                                 </TextBlock>
@@ -91,14 +98,15 @@
                                 <Slider x:Name="slider" Width="250" />
                             </StackPanel>
                         </Grid>
-                        <StackPanel Grid.Row="1" Margin="0, 20,0,0">
+                        <StackPanel Grid.Row="1" Margin="0, 0,0,0">
                             <Button Content="Convert" Background="White" Foreground="Black" BorderThickness="1"
                                     BorderBrush="Black" Command="{Binding GenerateFileSelectCommand}"
                                     HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5, 5, 5, 5"
                                     Height="50" FontWeight="Black" FontSize="25" HorizontalContentAlignment="Center" />
                         </StackPanel>
                         <StackPanel Grid.Row="2" Margin="0, 0,0,0">
-                            <Button Content="Open Output Folder" Background="White" Foreground="Black" BorderThickness="1"
+                            <Button Content="Open Output Folder" Background="White" Foreground="Black"
+                                    BorderThickness="1"
                                     BorderBrush="Black" Command="{Binding OpenLastOutputFolderCommand}"
                                     HorizontalAlignment="Stretch" VerticalContentAlignment="Center" Margin="5, 5, 5, 5"
                                     Height="25" FontWeight="Black" FontSize="10" HorizontalContentAlignment="Center" />

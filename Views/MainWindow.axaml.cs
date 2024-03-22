@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using ReactiveUI;
 using FileConvert.ViewModels;
 
@@ -48,6 +50,8 @@ public partial class MainWindow : Window
     {
         string? text = (e.AddedItems[0] as ComboBoxItem)!.Content as string;
         
+        Console.WriteLine(text);
+        
         if(text != default)
             (DataContext as MainWindowViewModel)!.SelectedConversionType = text;
 
@@ -56,20 +60,57 @@ public partial class MainWindow : Window
 
     private void OnSelectFileButtonClicked(object? sender, RoutedEventArgs e)
     {
+        OpenFileSelectWindow();
+        
         UpdateConversionLabelContent();
 
-        MainWindowViewModel viewModel = (DataContext as MainWindowViewModel)!;
+        UpdateImage();
 
+       
+    }
+
+    private void UpdateImage()
+    {
+        MainWindowViewModel viewModel = (DataContext as MainWindowViewModel)!;
         string[] allowedFileTypes = ["png", "jpg", "gif", "webp", "bmp", "tif"];
         
         if(viewModel.SelectedFilePath != null && viewModel.SelectedFilePath.Length > 3 && allowedFileTypes.Contains(viewModel.SelectedFileType))
             UpdateImage(viewModel.SelectedFilePath);
-        else
+        else //Add separate logic for previewing video files here.
             UpdateImage("");
     }
+    
 
     private void UpdateConversionLabelContent()
     {
         (DataContext as MainWindowViewModel)!.DataConversionType = (DataContext as MainWindowViewModel)!.SelectedFileType.ToUpper() + " to " + (DataContext as MainWindowViewModel)!.SelectedConversionType.ToUpper();
+    }
+    
+    //Will be called once the select file button is pressed.
+    private async void OpenFileSelectWindow()
+    {
+        // Start async operation to open the dialog.
+        IReadOnlyList<IStorageFile> files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Select File to Convert",
+            AllowMultiple = false
+        });
+
+
+        if (files.Count != 1)
+            return;
+        
+        MainWindowViewModel viewModel = (DataContext as MainWindowViewModel);
+        
+        viewModel!.SelectedFilePath = files[0].Path.ToString().Remove(0,8);
+        
+        string rawName = viewModel!.SelectedFilePath.Split('/').Last().Split('.').First();
+        string fileType = viewModel!.SelectedFilePath.Split('/').Last().Split('.').Last();
+
+        viewModel!.SelectedFileName = rawName;
+        viewModel!.SelectedFileType = fileType;
+        
+        UpdateImage();
+        UpdateConversionLabelContent();
     }
 }

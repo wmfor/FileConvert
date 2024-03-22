@@ -17,7 +17,7 @@
        
         
         <Grid RowDefinitions="Auto, *, Auto">
-            <Grid Grid.Row="0" Background="Black" Height="70" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+            <Grid Grid.Row="0" Background="DarkGray" Height="70" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2">
                     <Label Foreground="White" FontWeight="Black" FontSize="25">Settings</Label>
                     <Label Foreground="White">for File Convert</Label>
@@ -29,23 +29,23 @@
             <Grid Grid.Row="1" Height="240" Margin="1,5">
                 <Grid RowDefinitions="Auto, *, Auto">
                     
-                    <Border Grid.Row="0" Margin="5,5,5,5" Background="Black" CornerRadius="15" BorderBrush="Black"  BorderThickness="1" Padding="7">
+                    <Border Grid.Row="0" Margin="5,5,5,0"  CornerRadius="15"  Padding="7">
                     <CheckBox Margin="5,5,5,5" FontWeight="Black"  Name="SameCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
-                        <Label Foreground="White">Keep same file name</Label>
+                        <Label >Keep same file name</Label>
                     </CheckBox>
                     </Border>
                     
-                    <Border Grid.Row="1" Margin="5,5,5,5" Background="Black" CornerRadius="15" BorderBrush="Black"  BorderThickness="1" Padding="7">
+                    <Border Grid.Row="1" Margin="5,5,5,5"  CornerRadius="15" Padding="7">
                     <CheckBox Margin="5,5,5,5" FontWeight="Black" IsChecked="true"  Name="RandomCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
-                        <Label Foreground="White">Generate random file name</Label>
+                        <Label >Generate random file name</Label>
                     </CheckBox>
                     </Border>
                         
-                    <Border Grid.Row="2" Margin="5,5,5,5" Background="Black" CornerRadius="15" BorderBrush="Black"   BorderThickness="1" Padding="7">
+                    <Border Grid.Row="2" Margin="5,0,5,5"  CornerRadius="15" Padding="7">
                     <StackPanel>
                         
                         <CheckBox Margin="5,5,5,5" FontWeight="Black" Name="SpecificCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
-                            <Label Foreground="White">Choose specific file name</Label>
+                            <Label >Choose specific file name</Label>
                         </CheckBox>
                         <TextBox Name="SpecificNameTextBox" TextChanged="OnTextBoxChanged"  Watermark="Enter a output name"/>
                     </StackPanel>
