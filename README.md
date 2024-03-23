@@ -3,7 +3,7 @@
 
 # Supported FileTypes 
 
-##VIDEO##
+<h2>VIDEO</h2>
 
 MP4,
 MOV,
