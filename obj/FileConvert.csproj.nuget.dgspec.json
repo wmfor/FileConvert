@@ -60,25 +60,21 @@
               "target": "Package",
               "version": "[11.0.10, )"
             },
-            "Avalonia.Skia": {
-              "target": "Package",
-              "version": "[11.0.10, )"
-            },
             "Avalonia.Themes.Fluent": {
               "target": "Package",
               "version": "[11.0.10, )"
             },
+            "FFmpegWrapper": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "Magick.NET-Q16-AnyCPU": {
+              "target": "Package",
+              "version": "[13.6.0, )"
+            },
             "Material.Avalonia": {
               "target": "Package",
               "version": "[3.3.0, )"
-            },
-            "SkiaSharp": {
-              "target": "Package",
-              "version": "[2.88.7, )"
-            },
-            "SkiaSharp.NativeAssets.Linux.NoDependencies": {
-              "target": "Package",
-              "version": "[3.0.0-preview.2.1, )"
             }
           },
           "imports": [

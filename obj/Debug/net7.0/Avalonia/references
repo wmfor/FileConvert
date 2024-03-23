@@ -23,11 +23,15 @@ C:\Users\westo\.nuget\packages\avalonia.themes.simple\11.0.10\lib\net6.0\Avaloni
 C:\Users\westo\.nuget\packages\avalonia.win32\11.0.10\lib\net6.0\Avalonia.Win32.dll
 C:\Users\westo\.nuget\packages\avalonia.x11\11.0.10\lib\net6.0\Avalonia.X11.dll
 C:\Users\westo\.nuget\packages\dynamicdata\7.9.5\lib\net6.0\DynamicData.dll
+C:\Users\westo\.nuget\packages\h.extensions\1.0.42\lib\netstandard2.1\Extensions.dll
 C:\Users\westo\.nuget\packages\harfbuzzsharp\7.3.0\lib\net6.0\HarfBuzzSharp.dll
+C:\Users\westo\.nuget\packages\magick.net-q16-anycpu\13.6.0\lib\netstandard21\Magick.NET-Q16-AnyCPU.dll
+C:\Users\westo\.nuget\packages\magick.net.core\13.6.0\lib\netstandard21\Magick.NET.Core.dll
 C:\Users\westo\.nuget\packages\material.avalonia\3.3.0\lib\netstandard2.0\Material.Avalonia.dll
 C:\Users\westo\.nuget\packages\material.avalonia\3.3.0\lib\netstandard2.0\Material.Colors.dll
 C:\Users\westo\.nuget\packages\material.avalonia\3.3.0\lib\netstandard2.0\Material.Ripple.dll
 C:\Users\westo\.nuget\packages\material.avalonia\3.3.0\lib\netstandard2.0\Material.Styles.dll
+C:\Users\westo\.nuget\packages\ffmpegwrapper\1.0.1\lib\netstandard2.1\MediaToolkit.dll
 C:\Users\westo\.nuget\packages\microcom.runtime\0.11.0\lib\net5.0\MicroCom.Runtime.dll
 C:\Users\westo\.nuget\packages\microsoft.codeanalysis.csharp\3.8.0\lib\netcoreapp3.1\Microsoft.CodeAnalysis.CSharp.dll
 C:\Users\westo\.nuget\packages\microsoft.codeanalysis.csharp.scripting\3.8.0\lib\netcoreapp3.1\Microsoft.CodeAnalysis.CSharp.Scripting.dll
@@ -201,4 +205,5 @@ C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\7.0.17\ref\net7.0\System
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\7.0.17\ref\net7.0\System.Xml.XPath.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\7.0.17\ref\net7.0\System.Xml.XPath.XDocument.dll
 C:\Users\westo\.nuget\packages\tmds.dbus.protocol\0.15.0\lib\net6.0\Tmds.DBus.Protocol.dll
+C:\Users\westo\.nuget\packages\argsvalidation\0.0.2\lib\netstandard2.1\Validation.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\7.0.17\ref\net7.0\WindowsBase.dll

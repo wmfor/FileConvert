@@ -2,6 +2,18 @@
   "version": 3,
   "targets": {
     "net7.0": {
+      "ArgsValidation/0.0.2": {
+        "type": "package",
+        "dependencies": {
+          "System.ComponentModel.Annotations": "4.6.0"
+        },
+        "compile": {
+          "lib/netstandard2.1/Validation.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/Validation.dll": {}
+        }
+      },
       "Avalonia/11.0.10": {
         "type": "package",
         "dependencies": {
@@ -369,6 +381,28 @@
           }
         }
       },
+      "FFmpegWrapper/1.0.1": {
+        "type": "package",
+        "dependencies": {
+          "ArgsValidation": "0.0.2",
+          "H.Extensions": "1.0.42"
+        },
+        "compile": {
+          "lib/netstandard2.1/MediaToolkit.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/MediaToolkit.dll": {}
+        }
+      },
+      "H.Extensions/1.0.42": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.1/Extensions.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/Extensions.dll": {}
+        }
+      },
       "HarfBuzzSharp/7.3.0": {
         "type": "package",
         "dependencies": {
@@ -464,6 +498,72 @@
           "runtimes/win-x86/native/libHarfBuzzSharp.dll": {
             "assetType": "native",
             "rid": "win-x86"
+          }
+        }
+      },
+      "Magick.NET-Q16-AnyCPU/13.6.0": {
+        "type": "package",
+        "dependencies": {
+          "Magick.NET.Core": "13.6.0"
+        },
+        "compile": {
+          "lib/netstandard21/Magick.NET-Q16-AnyCPU.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard21/Magick.NET-Q16-AnyCPU.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/netstandard20/Magick.NET-Q16-AnyCPU.targets": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-arm64/native/Magick.Native-Q16-arm64.dll.so": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-musl-x64/native/Magick.Native-Q16-x64.dll.so": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/Magick.Native-Q16-x64.dll.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx-arm64/native/Magick.Native-Q16-arm64.dll.dylib": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/Magick.Native-Q16-x64.dll.dylib": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          },
+          "runtimes/win-arm64/native/Magick.Native-Q16-arm64.dll": {
+            "assetType": "native",
+            "rid": "win-arm64"
+          },
+          "runtimes/win-x64/native/Magick.Native-Q16-x64.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/Magick.Native-Q16-x86.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      },
+      "Magick.NET.Core/13.6.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard21/Magick.NET.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard21/Magick.NET.Core.dll": {
+            "related": ".xml"
           }
         }
       },
@@ -848,33 +948,6 @@
           }
         }
       },
-      "SkiaSharp.NativeAssets.Linux.NoDependencies/3.0.0-preview.2.1": {
-        "type": "package",
-        "compile": {
-          "lib/net7.0/_._": {}
-        },
-        "runtime": {
-          "lib/net7.0/_._": {}
-        },
-        "runtimeTargets": {
-          "runtimes/linux-arm/native/libSkiaSharp.so": {
-            "assetType": "native",
-            "rid": "linux-arm"
-          },
-          "runtimes/linux-arm64/native/libSkiaSharp.so": {
-            "assetType": "native",
-            "rid": "linux-arm64"
-          },
-          "runtimes/linux-musl-x64/native/libSkiaSharp.so": {
-            "assetType": "native",
-            "rid": "linux-musl-x64"
-          },
-          "runtimes/linux-x64/native/libSkiaSharp.so": {
-            "assetType": "native",
-            "rid": "linux-x64"
-          }
-        }
-      },
       "SkiaSharp.NativeAssets.macOS/2.88.7": {
         "type": "package",
         "compile": {
@@ -965,13 +1038,17 @@
           }
         }
       },
-      "System.ComponentModel.Annotations/4.5.0": {
+      "System.ComponentModel.Annotations/4.6.0": {
         "type": "package",
         "compile": {
-          "ref/netcoreapp2.0/_._": {}
+          "ref/netstandard2.1/System.ComponentModel.Annotations.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/netcoreapp2.0/_._": {}
+          "lib/netstandard2.1/System.ComponentModel.Annotations.dll": {
+            "related": ".xml"
+          }
         }
       },
       "System.Diagnostics.Debug/4.3.0": {
@@ -1443,6 +1520,18 @@
     }
   },
   "libraries": {
+    "ArgsValidation/0.0.2": {
+      "sha512": "giGziQyboO+2F1dgHphxVWfgXhnc6dUdJjZpioyqSF3TeL2ecrK3X0dTrFwjyir3bVS4CKujQ1zRliKtnopGmQ==",
+      "type": "package",
+      "path": "argsvalidation/0.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "argsvalidation.0.0.2.nupkg.sha512",
+        "argsvalidation.nuspec",
+        "lib/netstandard2.1/Validation.dll"
+      ]
+    },
     "Avalonia/11.0.10": {
       "sha512": "EH1FyD1SA7G/TfLmb7JKQlZiOBqr6VzttJMtA5Hnc/c1623zJej0PRuQlqn8Ad6qWKorrKEypBGA9Gye3uWDrA==",
       "type": "package",
@@ -1916,6 +2005,30 @@
         "logo.png"
       ]
     },
+    "FFmpegWrapper/1.0.1": {
+      "sha512": "uOqB4Y1nvEVroFuUhHbQSGIJ+Gc2SYRCnS6tjYL7S+JE9SpQBIjEHF/3MitwwjAZhNANjjPNvR+nKUXs55gkwQ==",
+      "type": "package",
+      "path": "ffmpegwrapper/1.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ffmpegwrapper.1.0.1.nupkg.sha512",
+        "ffmpegwrapper.nuspec",
+        "lib/netstandard2.1/MediaToolkit.dll"
+      ]
+    },
+    "H.Extensions/1.0.42": {
+      "sha512": "UOBxKd8aSHNxIJD1YBo2HK7QwEM/QSRPi8hCkE/XlTLwi0TLITzZNYWtfroTe+cLrGA+ibZzMrvKtplBndaWMA==",
+      "type": "package",
+      "path": "h.extensions/1.0.42",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "h.extensions.1.0.42.nupkg.sha512",
+        "h.extensions.nuspec",
+        "lib/netstandard2.1/Extensions.dll"
+      ]
+    },
     "HarfBuzzSharp/7.3.0": {
       "sha512": "OrQLaxtZMIeS2yHSUtsKzeSdk9CPaCpyJ/JCs+wLfRGatjE8MLUS6LGj6vdbGRxqRavcXs79C9O3oWe6FJR0JQ==",
       "type": "package",
@@ -2084,6 +2197,54 @@
         "runtimes/win-arm64/native/libHarfBuzzSharp.dll",
         "runtimes/win-x64/native/libHarfBuzzSharp.dll",
         "runtimes/win-x86/native/libHarfBuzzSharp.dll"
+      ]
+    },
+    "Magick.NET-Q16-AnyCPU/13.6.0": {
+      "sha512": "yuRR9pMdf6DoQ0aa9u/CAANeaeMW4PxzCw4EMSm349/VLVa3bLv70hm2w6kQXpTpf+IPf2Th1+5AbcNA12sHrw==",
+      "type": "package",
+      "path": "magick.net-q16-anycpu/13.6.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Magick.NET.icon.png",
+        "Notice.linux-musl.txt",
+        "Notice.linux.txt",
+        "Notice.osx.txt",
+        "Notice.win.txt",
+        "build/netstandard20/Magick.NET-Q16-AnyCPU.targets",
+        "docs/Readme.md",
+        "lib/netstandard20/Magick.NET-Q16-AnyCPU.dll",
+        "lib/netstandard20/Magick.NET-Q16-AnyCPU.xml",
+        "lib/netstandard21/Magick.NET-Q16-AnyCPU.dll",
+        "lib/netstandard21/Magick.NET-Q16-AnyCPU.xml",
+        "magick.net-q16-anycpu.13.6.0.nupkg.sha512",
+        "magick.net-q16-anycpu.nuspec",
+        "runtimes/linux-arm64/native/Magick.Native-Q16-arm64.dll.so",
+        "runtimes/linux-musl-x64/native/Magick.Native-Q16-x64.dll.so",
+        "runtimes/linux-x64/native/Magick.Native-Q16-x64.dll.so",
+        "runtimes/osx-arm64/native/Magick.Native-Q16-arm64.dll.dylib",
+        "runtimes/osx-x64/native/Magick.Native-Q16-x64.dll.dylib",
+        "runtimes/win-arm64/native/Magick.Native-Q16-arm64.dll",
+        "runtimes/win-x64/native/Magick.Native-Q16-x64.dll",
+        "runtimes/win-x86/native/Magick.Native-Q16-x86.dll"
+      ]
+    },
+    "Magick.NET.Core/13.6.0": {
+      "sha512": "VHW7fxIM/5z0m7pm6XXkAqTTCg6DlvVyn6MS/DhJ1bwY9v8W27AdhYDWOLns2P9zkD0WR72YAXPlcVbbIBVW6A==",
+      "type": "package",
+      "path": "magick.net.core/13.6.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Copyright.txt",
+        "Magick.NET.icon.png",
+        "docs/Readme.md",
+        "lib/netstandard20/Magick.NET.Core.dll",
+        "lib/netstandard20/Magick.NET.Core.xml",
+        "lib/netstandard21/Magick.NET.Core.dll",
+        "lib/netstandard21/Magick.NET.Core.xml",
+        "magick.net.core.13.6.0.nupkg.sha512",
+        "magick.net.core.nuspec"
       ]
     },
     "Material.Avalonia/3.3.0": {
@@ -2633,30 +2794,6 @@
         "skiasharp.nativeassets.linux.nuspec"
       ]
     },
-    "SkiaSharp.NativeAssets.Linux.NoDependencies/3.0.0-preview.2.1": {
-      "sha512": "oGU4Aid/0huKpiidQcpZK/mXxRfBe20crElALQo37tyG7LFmJDKD7N99YXMo551m+pKMTjoM+0oBpwVUzyLTWQ==",
-      "type": "package",
-      "path": "skiasharp.nativeassets.linux.nodependencies/3.0.0-preview.2.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.txt",
-        "README.md",
-        "THIRD-PARTY-NOTICES.txt",
-        "buildTransitive/net462/SkiaSharp.NativeAssets.Linux.NoDependencies.targets",
-        "icon.png",
-        "lib/net462/_._",
-        "lib/net7.0/_._",
-        "lib/netstandard2.0/_._",
-        "lib/netstandard2.1/_._",
-        "runtimes/linux-arm/native/libSkiaSharp.so",
-        "runtimes/linux-arm64/native/libSkiaSharp.so",
-        "runtimes/linux-musl-x64/native/libSkiaSharp.so",
-        "runtimes/linux-x64/native/libSkiaSharp.so",
-        "skiasharp.nativeassets.linux.nodependencies.3.0.0-preview.2.1.nupkg.sha512",
-        "skiasharp.nativeassets.linux.nodependencies.nuspec"
-      ]
-    },
     "SkiaSharp.NativeAssets.macOS/2.88.7": {
       "sha512": "3jNzco4VjcYPFNxR9aNWcgweFXbTSdM1VpNRzCS4X0i1A1OuNqcaulrAvmntNpujeWxHo9e6WGh6FN8Jf5+XhA==",
       "type": "package",
@@ -2844,10 +2981,10 @@
         "version.txt"
       ]
     },
-    "System.ComponentModel.Annotations/4.5.0": {
-      "sha512": "UxYQ3FGUOtzJ7LfSdnYSFd7+oEv6M8NgUatatIN2HxNtDdlcvFAf+VIq4Of9cDMJEJC0aSRv/x898RYhB4Yppg==",
+    "System.ComponentModel.Annotations/4.6.0": {
+      "sha512": "pOd+UhZ3X8xfwKDlgAzowUJNjp8VYVmOHZm++vCd0kq1HZ0zK3mNo2yRXjYgv7Ik/Xi43fmJfND2PLEsQSALCg==",
       "type": "package",
-      "path": "system.componentmodel.annotations/4.5.0",
+      "path": "system.componentmodel.annotations/4.6.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2858,11 +2995,11 @@
         "lib/net45/_._",
         "lib/net461/System.ComponentModel.Annotations.dll",
         "lib/netcore50/System.ComponentModel.Annotations.dll",
-        "lib/netcoreapp2.0/_._",
         "lib/netstandard1.4/System.ComponentModel.Annotations.dll",
         "lib/netstandard2.0/System.ComponentModel.Annotations.dll",
+        "lib/netstandard2.1/System.ComponentModel.Annotations.dll",
+        "lib/netstandard2.1/System.ComponentModel.Annotations.xml",
         "lib/portable-net45+win8/_._",
-        "lib/uap10.0.16299/_._",
         "lib/win8/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
@@ -2884,7 +3021,6 @@
         "ref/netcore50/ru/System.ComponentModel.Annotations.xml",
         "ref/netcore50/zh-hans/System.ComponentModel.Annotations.xml",
         "ref/netcore50/zh-hant/System.ComponentModel.Annotations.xml",
-        "ref/netcoreapp2.0/_._",
         "ref/netstandard1.1/System.ComponentModel.Annotations.dll",
         "ref/netstandard1.1/System.ComponentModel.Annotations.xml",
         "ref/netstandard1.1/de/System.ComponentModel.Annotations.xml",
@@ -2920,14 +3056,15 @@
         "ref/netstandard1.4/zh-hant/System.ComponentModel.Annotations.xml",
         "ref/netstandard2.0/System.ComponentModel.Annotations.dll",
         "ref/netstandard2.0/System.ComponentModel.Annotations.xml",
+        "ref/netstandard2.1/System.ComponentModel.Annotations.dll",
+        "ref/netstandard2.1/System.ComponentModel.Annotations.xml",
         "ref/portable-net45+win8/_._",
-        "ref/uap10.0.16299/_._",
         "ref/win8/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._",
-        "system.componentmodel.annotations.4.5.0.nupkg.sha512",
+        "system.componentmodel.annotations.4.6.0.nupkg.sha512",
         "system.componentmodel.annotations.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
@@ -4662,11 +4799,10 @@
       "Avalonia.Diagnostics >= 11.0.10",
       "Avalonia.Fonts.Inter >= 11.0.10",
       "Avalonia.ReactiveUI >= 11.0.10",
-      "Avalonia.Skia >= 11.0.10",
       "Avalonia.Themes.Fluent >= 11.0.10",
-      "Material.Avalonia >= 3.3.0",
-      "SkiaSharp >= 2.88.7",
-      "SkiaSharp.NativeAssets.Linux.NoDependencies >= 3.0.0-preview.2.1"
+      "FFmpegWrapper >= 1.0.1",
+      "Magick.NET-Q16-AnyCPU >= 13.6.0",
+      "Material.Avalonia >= 3.3.0"
     ]
   },
   "packageFolders": {
@@ -4728,25 +4864,21 @@
             "target": "Package",
             "version": "[11.0.10, )"
           },
-          "Avalonia.Skia": {
-            "target": "Package",
-            "version": "[11.0.10, )"
-          },
           "Avalonia.Themes.Fluent": {
             "target": "Package",
             "version": "[11.0.10, )"
           },
+          "FFmpegWrapper": {
+            "target": "Package",
+            "version": "[1.0.1, )"
+          },
+          "Magick.NET-Q16-AnyCPU": {
+            "target": "Package",
+            "version": "[13.6.0, )"
+          },
           "Material.Avalonia": {
             "target": "Package",
             "version": "[3.3.0, )"
-          },
-          "SkiaSharp": {
-            "target": "Package",
-            "version": "[2.88.7, )"
-          },
-          "SkiaSharp.NativeAssets.Linux.NoDependencies": {
-            "target": "Package",
-            "version": "[3.0.0-preview.2.1, )"
           }
         },
         "imports": [
