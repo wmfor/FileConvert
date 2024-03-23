@@ -1,24 +1,39 @@
 # FileConvert
- Gone are the days of constantly googling online file conversion webapps, revel in the simplicity of this application's ability to convert filetypes.
+ Gone are the days of constantly googling online file conversion webapps. Revel in the simplicity of this application's ability to convert filetypes.
 
-# Supported FileTypes 
+<h1> Supported FileTypes </h1>
 
-VIDEO--
-mp4,
-gif,
+<h2>VIDEO</h2>
 
-AUDIO--
-mp3,
-wav,
-flac,
+<ol>
+ <li>MP4</lo>
+ <li>MOV</lo>
+ <li>AVI</lo>
+</ol>
 
 
-PHOTO--
-jpg,
-png,
-avif,
-webp,
-bmp,
-tiff,
+
+
+<h2>AUDIO</h2>
+
+<ol>
+ <li>MP3</lo>
+ <li>FLAC</lo>
+ <li>WAV</lo>
+</ol>
+
+
+<h2>PHOTO</h2>
+
+<ol>
+<li>JPG</lo>
+<li>PNG</lo>
+<li>AVIF</lo>
+<li>WEBP</lo>
+<li>BMP</lo>
+<li>TIF</lo>
+<li>GIF</lo>
+</ol>
+
 
 
