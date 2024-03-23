@@ -5,9 +5,13 @@
 
 <h2>VIDEO</h2>
 
-MP4,
-MOV,
-AVI,
+<ol>
+ <li>MP4,</lo>
+ <li>MOV,</lo>
+ <li>AVI,</lo>
+</ol>
+
+
 
 
 <h2>AUDIO</h2>
