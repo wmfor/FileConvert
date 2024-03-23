@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "13zkN9bxRvTKwGONcGhnfUxMIWbxYuLWP8vqeG3XdPA//kcMKVPkHJsrL+V49g18MCXFvZeZeH5Wv8/fPT8c1w==",
+  "dgSpecHash": "6WBkrLFOpFwl3llYlni9Dkcphjl+CgwuqkMj2meGPMTyHf/SBKO86Fu1Ua0qR09jPkzXfZRx13SweUpJh/wJmQ==",
   "success": true,
   "projectFilePath": "C:\\GITHUB\\2. Applications\\FileConvert\\FileConvert\\FileConvert.csproj",
   "expectedPackageFiles": [
@@ -27,7 +27,7 @@
     "C:\\Users\\westo\\.nuget\\packages\\harfbuzzsharp.nativeassets.macos\\7.3.0\\harfbuzzsharp.nativeassets.macos.7.3.0.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\harfbuzzsharp.nativeassets.webassembly\\7.3.0\\harfbuzzsharp.nativeassets.webassembly.7.3.0.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\harfbuzzsharp.nativeassets.win32\\7.3.0\\harfbuzzsharp.nativeassets.win32.7.3.0.nupkg.sha512",
-    "C:\\Users\\westo\\.nuget\\packages\\material.avalonia\\3.4.3-nightly.0.10\\material.avalonia.3.4.3-nightly.0.10.nupkg.sha512",
+    "C:\\Users\\westo\\.nuget\\packages\\material.avalonia\\3.3.0\\material.avalonia.3.3.0.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\microcom.runtime\\0.11.0\\microcom.runtime.0.11.0.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.0.0\\microsoft.codeanalysis.analyzers.3.0.0.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\microsoft.codeanalysis.common\\3.8.0\\microsoft.codeanalysis.common.3.8.0.nupkg.sha512",
@@ -40,6 +40,7 @@
     "C:\\Users\\westo\\.nuget\\packages\\reactiveui\\18.3.1\\reactiveui.18.3.1.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\skiasharp\\2.88.7\\skiasharp.2.88.7.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\skiasharp.nativeassets.linux\\2.88.7\\skiasharp.nativeassets.linux.2.88.7.nupkg.sha512",
+    "C:\\Users\\westo\\.nuget\\packages\\skiasharp.nativeassets.linux.nodependencies\\3.0.0-preview.2.1\\skiasharp.nativeassets.linux.nodependencies.3.0.0-preview.2.1.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\skiasharp.nativeassets.macos\\2.88.7\\skiasharp.nativeassets.macos.2.88.7.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\2.88.7\\skiasharp.nativeassets.webassembly.2.88.7.nupkg.sha512",
     "C:\\Users\\westo\\.nuget\\packages\\skiasharp.nativeassets.win32\\2.88.7\\skiasharp.nativeassets.win32.2.88.7.nupkg.sha512",

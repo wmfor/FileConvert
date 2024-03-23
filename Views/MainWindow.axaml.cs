@@ -72,7 +72,7 @@ public partial class MainWindow : Window
     private void UpdateImage()
     {
         MainWindowViewModel viewModel = (DataContext as MainWindowViewModel)!;
-        string[] allowedFileTypes = ["png", "jpg", "gif", "webp", "bmp", "tif"];
+        string[] allowedFileTypes = { "png", "jpg", "gif", "webp", "bmp", "tif" };
         
         if(viewModel.SelectedFilePath != null && viewModel.SelectedFilePath.Length > 3 && allowedFileTypes.Contains(viewModel.SelectedFileType))
             UpdateImage(viewModel.SelectedFilePath);
