@@ -17,7 +17,7 @@
 <h2>AUDIO</h2>
 
 <ol>
- <li>MP#</lo>
+ <li>MP3</lo>
  <li>FLAC</lo>
  <li>WAV</lo>
 </ol>
