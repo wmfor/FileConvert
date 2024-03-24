@@ -4,12 +4,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:FileConvert.ViewModels"
         x:DataType="vm:SettingsWindowViewModel"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="350" Width="350" Height="350"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="350" Width="350" Height="350"
         x:Class="FileConvert.Views.SettingsWindow"
         Title="SettingsWindow"
-        Background="Transparent"
-        TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
         CanResize="false"
 >
        

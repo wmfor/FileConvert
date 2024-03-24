@@ -1,6 +1,5 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
              x:Class="FileConvert.App"
              xmlns:local="using:FileConvert"
              RequestedThemeVariant="Dark">
@@ -11,7 +10,7 @@
     </Application.DataTemplates>
   
     <Application.Styles>
-        <themes:MaterialTheme PrimaryColor="Blue" SecondaryColor="Green"/>
+        <FluentTheme/>
     </Application.Styles>
              
              <Application.Resources>

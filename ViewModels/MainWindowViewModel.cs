@@ -146,7 +146,7 @@ public class MainWindowViewModel : ViewModelBase
         OpenLastOutputFolderCommand = ReactiveCommand.Create(OpenFolderWindow);
 
 
-         /*
+         // /*
         _SettingsInstanceViewModel = new SettingsWindowViewModel();
 
         SettingsInstance = new SettingsWindow
@@ -155,7 +155,7 @@ public class MainWindowViewModel : ViewModelBase
         };
         _SettingsInstanceViewModel.MainWindowViewModel = this;
        SettingsInstance.Hide();
-        */
+        // */
         // ^^ UNCOMMENT THIS SECTION FOR SETTINGS FUNCTIONALITY, COMMENT TO GET LIVE PREVIEW TO WORK.
     }
 
@@ -167,15 +167,11 @@ public class MainWindowViewModel : ViewModelBase
     private void OpenSettingsWindow()
     {
         //If the settings window is already visible, hide it.
-        if (SettingsInstance.IsVisible)
-        {
+        if (SettingsInstance!.IsVisible == true)
             SettingsInstance.Hide();
-        }
         //If the settings window hasn't been instantiated yet, create it.
-        else if (!SettingsInstance.IsVisible)
-        {
+        else if (SettingsInstance!.IsVisible == false)
             SettingsInstance.Show();
-        }
     }
 
 
@@ -226,10 +222,7 @@ public class MainWindowViewModel : ViewModelBase
     public bool GetIsUsingFFMPEG()
     {
         //This just checks if your current selected conversion type is an AUDIO/VIDEO file, and if so, use FFMPEG, but if not, use ImageMagick.
-        if (FileTypes.Any(x => (x.Item1 == 1 || x.Item1 == 2) && x.Item2.ToUpper() == SelectedConversionType.ToUpper()))
-            return true;
-        
-        return false;
+        return FileTypes.Any(x => (x.Item1 == 1 || x.Item1 == 2) && x.Item2.ToUpper() == SelectedConversionType.ToUpper());
     }
 
     public string GetFileOutputName(string outputFilePath)
@@ -237,23 +230,19 @@ public class MainWindowViewModel : ViewModelBase
         bool doesContainDuplicateSpecificName = false;
         bool doesContainDuplicateSameName = false;
 
-        if (_SettingsInstanceViewModel == null)
-            Console.WriteLine("View Model NULL!!!!");
-
         //Get all files in the chosen output directory.
         foreach (string file in Directory.GetFiles(outputFilePath))
         {
             string fixedFile = file.Remove(0, outputFilePath.Length + 1); //Removes the directory prefix.
 
-            Console.WriteLine(fixedFile);
-
             if (_SettingsInstanceViewModel!.SpecificName != null && fixedFile.Contains(_SettingsInstanceViewModel!.SpecificName)) //There's already a file with the same specific name in that directory.
                 doesContainDuplicateSpecificName = true;
             else if (fixedFile.Contains("originalFileName")) //There's already a file with the same original name in that directory.
                 doesContainDuplicateSameName = true;
+            
+            //Dont need to check for Random because it uses a GUID, will basically never have a clone.
         }
-
-
+        
         //Set the file to a random name by default.
         string? outputFileName = default;
 
@@ -308,6 +297,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public string RunCMDCommand(string arguments, bool readOutput)
     {
+        Console.WriteLine("RUNNING ARGUMENTS -- " + arguments);
         var output = string.Empty;
         try
         {
