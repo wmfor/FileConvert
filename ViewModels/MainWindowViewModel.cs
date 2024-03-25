@@ -1,42 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Interactivity;
-using Avalonia.Platform.Storage;
+using Avalonia.Media.Imaging;
 using FileConvert.Views;
 using ReactiveUI;
 namespace FileConvert.ViewModels;
 
-//Make sure the ComboBox options match these exactly, uses this are reference to get index of option.
-internal enum ConversionType
-{
-    PNG,
-    JPG,
-    WEBP,
-    ICO,
-    BMP,
-    TIFF,
-    GIF,
-    WAV,
-    OGG,
-    FLAC,
-    MP3,
-    MP4,
-    MOV,
-    AVI
-}
 public class MainWindowViewModel : ViewModelBase
 {
 #pragma warning disable CA1822 // Mark members as static
 
-    public (int, string)[] FileTypes  // || 0 = PHOTO |||| 1 = VIDEO ||||| 2 = AUDIO ||
+    public static (int, string)[] FileTypes // || 0 = PHOTO |||| 1 = VIDEO ||||| 2 = AUDIO ||
     {
         get
         {
@@ -68,21 +45,13 @@ public class MainWindowViewModel : ViewModelBase
 
     public string SelectedFileName = ""; //What the raw name of the selected file is e.g "FileName", or "MyFileWestonForbes", etc.
     public string SelectedFileType = ""; //What the selected file's type is e.g. png, jpg, etc.
-    public string SelectedFileResolution = ""; //What the select (image/photo) file's resolution is.
-    public string SelectedFileSize = ""; //What the selected file's size is, e.g 32.52mb
 
-    private string _DataConversionType; //A string that holds the conversion type in plaintext (e.g. (PNG to GIF), (MP4 to MP3), etc etc.)
     private string? _SelectedFilePath = ""; //The full path to the selected file.
     private int _SelectedConversionTypeIndex; //The index of the dropdown option that is currently selected.
-    private string _SelectedConversionType; //The literal type of the selected dropdown type (e.g. png, jpg, mp3, etc)
-    private string _SelectedFileNameWithType; //The name of the file, combined with the type ( e.g. "MyFile.JPG" )
+    private string _SelectedConversionType = "PNG"; //The literal type of the selected dropdown type (e.g. png, jpg, mp3, etc)
+    private string _SelectedFileNameWithType = ""; //The name of the file, combined with the type ( e.g. "MyFile.JPG" )
 
     public string SelectedFileNameWithType { get => _SelectedFileNameWithType; set => this.RaiseAndSetIfChanged(ref _SelectedFileNameWithType, value); } //The file's name with the type extension, e.g filename.ogg, or myfile.mp3.
-    public string DataConversionType
-    {
-        get => _DataConversionType;
-        set => this.RaiseAndSetIfChanged(ref _DataConversionType, value);
-    }
 
     //The path you've selected for the file you wish to convert.
     public string? SelectedFilePath
@@ -91,7 +60,7 @@ public class MainWindowViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref _SelectedFilePath, value);
-            SelectedFileNameWithType = SelectedFilePath.Split('/').Last();
+            SelectedFileNameWithType = SelectedFilePath!.Split('/').Last();
         }
     }
 
@@ -115,22 +84,21 @@ public class MainWindowViewModel : ViewModelBase
             this.RaiseAndSetIfChanged(ref _SelectedConversionTypeIndex, value);
             Console.WriteLine("Selected Conversion Index Changed To " + _SelectedConversionTypeIndex);
 
-            SelectedConversionType = ((ConversionType)SelectedConversionTypeIndex).ToString();
+            SelectedConversionType = FileTypes[SelectedConversionTypeIndex].Item2;
         }
     }
-
 
 
     public ICommand OpenSettingsSelectCommand { get; }
     public ICommand OpenLastOutputFolderCommand { get; }
 
 
-
-
     //The instance of the settings window.
-    private SettingsWindow? SettingsInstance;
+    private SettingsWindow? _SettingsInstance;
     private SettingsWindowViewModel? _SettingsInstanceViewModel;
 
+    private EnlargedImageWindow? _EnlargedImageInstance;
+    private EnlargedImageViewModel? _EnlargedImageViewModel;
 
 
 
@@ -145,33 +113,73 @@ public class MainWindowViewModel : ViewModelBase
         OpenSettingsSelectCommand = ReactiveCommand.Create(OpenSettingsWindow);
         OpenLastOutputFolderCommand = ReactiveCommand.Create(OpenFolderWindow);
 
-
-         // /*
-        _SettingsInstanceViewModel = new SettingsWindowViewModel();
-
-        SettingsInstance = new SettingsWindow
-        {
-            DataContext = _SettingsInstanceViewModel
-        };
-        _SettingsInstanceViewModel.MainWindowViewModel = this;
-       SettingsInstance.Hide();
-        // */
         // ^^ UNCOMMENT THIS SECTION FOR SETTINGS FUNCTIONALITY, COMMENT TO GET LIVE PREVIEW TO WORK.
     }
 
+    private void CreateSettingsInstance()
+    {
+        if (_SettingsInstanceViewModel == null || _SettingsInstance == null)
+        {
+            _SettingsInstanceViewModel = new SettingsWindowViewModel();
 
+            _SettingsInstance = new SettingsWindow
+            {
+                DataContext = _SettingsInstanceViewModel
+            };
+            _SettingsInstanceViewModel.MainWindowViewModel = this;
+            _SettingsInstance.Hide();
+        }
+    }
 
+    private void CreateEnlargedImageInstance()
+    {
+        if (_EnlargedImageViewModel == null || _EnlargedImageInstance == null)
+        {
+            _EnlargedImageViewModel = new EnlargedImageViewModel();
+
+            _EnlargedImageInstance = new EnlargedImageWindow()
+            {
+                DataContext = _EnlargedImageViewModel
+            };
+            _EnlargedImageViewModel.MainWindowViewModel = this;
+        }
+    }
 
 
     //Called via the 'Settings' gear button.
     private void OpenSettingsWindow()
     {
+        if (_SettingsInstance == null || _SettingsInstanceViewModel == null)
+        {
+            CreateSettingsInstance();
+        }
+
         //If the settings window is already visible, hide it.
-        if (SettingsInstance!.IsVisible == true)
-            SettingsInstance.Hide();
+        if (_SettingsInstance!.IsVisible)
+            _SettingsInstance.Hide();
         //If the settings window hasn't been instantiated yet, create it.
-        else if (SettingsInstance!.IsVisible == false)
-            SettingsInstance.Show();
+        else if (_SettingsInstance!.IsVisible == false)
+            _SettingsInstance.Show();
+    }
+
+
+    public void OpenSelectedImage()
+    {
+        if (_EnlargedImageViewModel == null || _EnlargedImageInstance == null)
+        {
+            CreateEnlargedImageInstance();
+        }
+
+        if (!File.Exists(SelectedFilePath))
+            return;
+
+        if (_EnlargedImageInstance!.IsVisible)
+            _EnlargedImageInstance.Hide();
+        else if (_EnlargedImageInstance.IsVisible == false)
+            _EnlargedImageInstance.Show();
+
+        Bitmap defaultBitmap = new Bitmap(SelectedFilePath!);
+        //_EnlargedImageInstance.EnlargedImageWindowImage.Source = defaultBitmap;
     }
 
 
@@ -219,7 +227,7 @@ public class MainWindowViewModel : ViewModelBase
     }
 
 
-    public bool GetIsUsingFFMPEG()
+    public bool GetIsUsingFfmpeg()
     {
         //This just checks if your current selected conversion type is an AUDIO/VIDEO file, and if so, use FFMPEG, but if not, use ImageMagick.
         return FileTypes.Any(x => (x.Item1 == 1 || x.Item1 == 2) && x.Item2.ToUpper() == SelectedConversionType.ToUpper());
@@ -239,10 +247,10 @@ public class MainWindowViewModel : ViewModelBase
                 doesContainDuplicateSpecificName = true;
             else if (fixedFile.Contains("originalFileName")) //There's already a file with the same original name in that directory.
                 doesContainDuplicateSameName = true;
-            
+
             //Dont need to check for Random because it uses a GUID, will basically never have a clone.
         }
-        
+
         //Set the file to a random name by default.
         string? outputFileName = default;
 
@@ -277,8 +285,10 @@ public class MainWindowViewModel : ViewModelBase
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            ProcessStartInfo windowsProcess = new ProcessStartInfo("cmd", $"/c start {link}");
-            windowsProcess.WindowStyle = ProcessWindowStyle.Hidden;
+            ProcessStartInfo windowsProcess = new ProcessStartInfo("cmd", $"/c start {link}")
+            {
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
 
             Process.Start(windowsProcess);
         }
@@ -295,7 +305,7 @@ public class MainWindowViewModel : ViewModelBase
 
 
 
-    public string RunCMDCommand(string arguments, bool readOutput)
+    public string RunCmdCommand(string arguments, bool readOutput)
     {
         Console.WriteLine("RUNNING ARGUMENTS -- " + arguments);
         var output = string.Empty;
@@ -317,10 +327,10 @@ public class MainWindowViewModel : ViewModelBase
 
             if (readOutput)
             {
-                output = proc.StandardOutput.ReadToEnd();
+                output = proc!.StandardOutput.ReadToEnd();
             }
 
-            proc.WaitForExit(60000);
+            proc!.WaitForExit(60000);
 
             return output;
         } catch (Exception)
