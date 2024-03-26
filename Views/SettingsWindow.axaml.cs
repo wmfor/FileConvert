@@ -44,6 +44,11 @@ public partial class SettingsWindow : Window
         (DataContext as SettingsWindowViewModel)!.SpecificName = textBox.Text; 
     }
     
+    public void OnClickCloseButton(object? sender, RoutedEventArgs e)
+    {
+        Hide();
+    }
+    
     //When you check a checkbox.
     private void OnCheckboxChanged(object sender, RoutedEventArgs e)
     {

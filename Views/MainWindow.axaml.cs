@@ -60,16 +60,12 @@ public partial class MainWindow : Window
     private void OnComboBoxChangeSelected(object? sender, SelectionChangedEventArgs e)
     {
         string? text = (e.AddedItems[0] as ComboBoxItem)!.Content as string;
-
-        Console.WriteLine(text);
-
+        
         if (text != default)
             (DataContext as MainWindowViewModel)!.SelectedConversionType = text;
 
         UpdateFileTypeLabelContent();
-
         UpdateTypeConversionAccessibility();
-
     }
 
     private void UpdateTypeConversionAccessibility()
@@ -137,6 +133,11 @@ public partial class MainWindow : Window
     private void OnGenerateButtonClicked(object? sender, RoutedEventArgs e) => GenerateFile();
 
 
+    public void OnGithubButtonClicked(object? sender, RoutedEventArgs e)
+    {
+        (DataContext as MainWindowViewModel).OpenLinkInBrowser("https://github.com/turacept");
+    }
+    
     private void UpdateImage()
     {
         MainWindowViewModel viewModel = (DataContext as MainWindowViewModel)!;

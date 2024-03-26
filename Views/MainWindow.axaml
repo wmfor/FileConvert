@@ -28,7 +28,7 @@
 
                 <Grid Grid.Column="0" Background="#121212">
                     <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto">
-                        <Border Grid.Row="0" Background="Gray" BorderBrush="Black" PointerPressed="OpenEnlargedImage"
+                        <Border Grid.Row="0" Background="#404040" BorderBrush="#545454"
                                 BorderThickness="1"
                                 Width="200"
                                 Height="200">
@@ -38,7 +38,7 @@
                         </Border>
 
 
-                        <StackPanel Grid.Row="1" Margin="5,5,5,5" Background="Gray" Width="200">
+                        <StackPanel Grid.Row="1" Margin="5,5,5,5" Background="#404040" Width="200">
                             <Label Content="File Name" Background="#545454" HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Left" FontWeight="DemiBold">
                             </Label>
@@ -48,7 +48,7 @@
                                    Name="SelectedFilePathText" HorizontalAlignment="Center" FontSize="12" />
                         </StackPanel>
 
-                        <StackPanel Grid.Row="2" Margin="5,0,5,5" Background="Gray" Width="200">
+                        <StackPanel Grid.Row="2" Margin="5,0,5,5" Background="#404040" Width="200">
                             <Label Content="File Type" Background="#545454" HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Left" FontWeight="DemiBold">
                             </Label>
@@ -56,7 +56,7 @@
                                    FontFamily="{StaticResource NunitoFont}" FontSize="12" />
                         </StackPanel>
 
-                        <StackPanel Grid.Row="3" Margin="5,0,5,5" Background="Gray" Width="200">
+                        <StackPanel Grid.Row="3" Margin="5,0,5,5" Background="#404040" Width="200">
                             <Label Content="File Size" Background="#545454" HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Left" FontWeight="DemiBold">
                             </Label>
@@ -64,7 +64,7 @@
                                    FontFamily="{StaticResource NunitoFont}" FontSize="12" />
                         </StackPanel>
 
-                        <StackPanel Grid.Row="4" Background="Gray" Margin="5,0,5,5" Width="200">
+                        <StackPanel Grid.Row="4" Background="#404040" Margin="5,0,5,5" Width="200">
                             <Label Content="File Resolution" Background="#545454" HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Left" FontWeight="DemiBold">
                             </Label>
@@ -79,11 +79,11 @@
 
                 <Grid Grid.Column="1">
                     <Grid RowDefinitions="Auto, Auto, *">
-                        <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" Width="290">
+                        <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" Margin="10,5,10,5">
 
                             <StackPanel Grid.Row="0" Background="#1f1f1f" Margin="0,10,0,0">
-                                <Label Content="Input File" FontSize="16" FontWeight="DemiBold"
-                                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                <Label Content="Input File" FontSize="10" FontWeight="DemiBold"
+                                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                                        Background="#141414" />
                                 <Button Content="Select File" CornerRadius="15" BorderThickness="1"
                                         Click="OnSelectFileButtonClicked"
@@ -94,8 +94,8 @@
 
 
                             <StackPanel Grid.Row="1" Margin="0,10,0,0" Background="#1f1f1f">
-                                <Label Content="Output Type" FontSize="16" FontWeight="DemiBold"
-                                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                <Label Content="Output Type" FontSize="10" FontWeight="DemiBold"
+                                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                                        Background="#141414" />
                                 <ComboBox Name="FileTypeComboBox"
                                           SelectionChanged="OnComboBoxChangeSelected" FontWeight="Black" FontSize="14"
@@ -206,43 +206,45 @@
 
 
                             <StackPanel Grid.Row="3" Height="85" Margin="0,10,0,0" Background="#1f1f1f">
-                                <Label Content="Compression" FontSize="16" FontWeight="DemiBold"
-                                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                <Label Content="Compression" FontSize="10" FontWeight="DemiBold"
+                                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                                        Background="#141414" />
                                 <Label Margin="5,5,5,5" HorizontalAlignment="Center" Foreground="White"
                                        FontFamily="{StaticResource NunitoFont}"
                                        FontSize="14" Content="{Binding #slider.Value}" />
-                                <Slider x:Name="slider" Name="CompressionSlider" Width="200" Margin="0,-25,0,0"
+                                <Slider x:Name="slider" Name="CompressionSlider" Margin="20,-25,20,0"
                                         IsSnapToTickEnabled="True" TickFrequency="5" />
                             </StackPanel>
 
                             <StackPanel Grid.Row="4" Margin="0,10,0,0" Background="#1f1f1f">
-                                <Label Content="Resolution" FontSize="16" FontWeight="DemiBold"
-                                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                <Label Content="Resolution" FontSize="10" FontWeight="DemiBold"
+                                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                                        Background="#141414" Margin="0,0,0,10" />
                                 <Panel>
                                     <TextBox Watermark="Width" Name="ResolutionWidthInput"
                                              TextChanged="OnResolutionInputTextChanged" Margin="30,0,0,15" Height="30"
-                                             Width="100" Background="DimGray" HorizontalAlignment="Left"
-                                             BorderBrush="Black" BorderThickness="1" />
-                                    <Label Content="X" Height="40" HorizontalAlignment="Center" FontSize="15" />
+                                             Background="DimGray" HorizontalAlignment="Left"
+                                             BorderBrush="Black" BorderThickness="1" Width="100" MinWidth="20" />
+                                    <Label Content="X" Foreground="Gray" FontWeight="Black" Height="40"
+                                           HorizontalAlignment="Center" FontSize="15" />
                                     <TextBox Watermark="Height" Name="ResolutionHeightInput"
                                              TextChanged="OnResolutionInputTextChanged" Margin="0,0,30,15" Height="30"
-                                             Width="100" Background="DimGray" HorizontalAlignment="Right"
+                                             Background="DimGray" HorizontalAlignment="Right"
+                                             Width="100" MinWidth="20"
                                              BorderBrush="Black" BorderThickness="1" />
                                 </Panel>
                             </StackPanel>
 
 
                             <Label Grid.Row="5" Content="Error Text" Name="ErrorText" Foreground="Red" FontSize="12"
-                                   Margin="0,25,0,-10"
+                                   Margin="0,30,0,-10"
                                    FontWeight="SemiLight" HorizontalAlignment="Center" />
 
 
                         </Grid>
-                        <StackPanel Grid.Row="1" Margin="0, 20,0,0" Background="#121212">
+                        <StackPanel Grid.Row="1" Margin="0, 25,0,0" Background="#121212">
 
-                            <Grid ColumnDefinitions="Auto, Auto">
+                            <Grid ColumnDefinitions="Auto, Auto, Auto">
                                 <Panel Grid.Column="0">
                                     <Button Command="{Binding OpenSettingsSelectCommand}" Width="40" Height="28"
                                             Margin="5,0,0,0" HorizontalAlignment="Left" Classes="light"
@@ -261,6 +263,13 @@
                                             Height="30" FontWeight="Black" FontSize="10"
                                             CornerRadius="15"
                                             HorizontalContentAlignment="Center" />
+                                </Panel>
+                                <Panel Grid.Column="2">
+                                    <Button Width="40" Height="28"
+                                            Margin="0,0,0,0" HorizontalAlignment="Left"  Click="OnGithubButtonClicked"
+                                            CornerRadius="15">
+                                        <Image Source="../Assets/Github.png" Width="80" Height="20"></Image>
+                                    </Button>
                                 </Panel>
                             </Grid>
 

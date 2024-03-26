@@ -126,6 +126,7 @@ public class MainWindowViewModel : ViewModelBase
             {
                 DataContext = _SettingsInstanceViewModel
             };
+            
             _SettingsInstanceViewModel.MainWindowViewModel = this;
             _SettingsInstance.Hide();
         }
@@ -133,15 +134,17 @@ public class MainWindowViewModel : ViewModelBase
 
     private void CreateEnlargedImageInstance()
     {
-        if (_EnlargedImageViewModel == null || _EnlargedImageInstance == null)
+        if ( _EnlargedImageInstance == null)
         {
             _EnlargedImageViewModel = new EnlargedImageViewModel();
 
-            _EnlargedImageInstance = new EnlargedImageWindow()
+            _EnlargedImageInstance = new EnlargedImageWindow
             {
                 DataContext = _EnlargedImageViewModel
             };
+            
             _EnlargedImageViewModel.MainWindowViewModel = this;
+            _EnlargedImageInstance.Hide();
         }
     }
 
@@ -165,7 +168,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public void OpenSelectedImage()
     {
-        if (_EnlargedImageViewModel == null || _EnlargedImageInstance == null)
+        if (_EnlargedImageInstance == null)
         {
             CreateEnlargedImageInstance();
         }
@@ -174,12 +177,19 @@ public class MainWindowViewModel : ViewModelBase
             return;
 
         if (_EnlargedImageInstance!.IsVisible)
+        {
             _EnlargedImageInstance.Hide();
+            Console.WriteLine("Hiding");
+        }
         else if (_EnlargedImageInstance.IsVisible == false)
+        {
             _EnlargedImageInstance.Show();
+           Console.WriteLine("Showing"); 
+        }
 
         Bitmap defaultBitmap = new Bitmap(SelectedFilePath!);
-        //_EnlargedImageInstance.EnlargedImageWindowImage.Source = defaultBitmap;
+        _EnlargedImageInstance.EnlargedImageWindowImage.Source = defaultBitmap;
+        _EnlargedImageInstance.FileNameText.Content = SelectedFileName;
     }
 
 

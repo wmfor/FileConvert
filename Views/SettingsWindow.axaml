@@ -9,7 +9,7 @@
         Title="SettingsWindow"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
-        CanResize="false"
+        CanResize="False"
 >
        
     
@@ -17,25 +17,26 @@
        
         
         <Grid RowDefinitions="Auto, *, Auto">
-            <Grid Grid.Row="0" Background="DimGray" Height="50" ColumnDefinitions="Auto, Auto, *, Auto, Auto">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2">
-                    <Label Foreground="White" FontFamily="{StaticResource NunitoFont}"  FontWeight="Black" FontSize="25">Settings</Label>
-                    <Label Foreground="White" FontFamily="{StaticResource NunitoFont}" >for File Convert</Label>
-                </StackPanel>
-            </Grid>
+            <StackPanel Grid.Row="0" Background="Black">
+                <Grid ColumnDefinitions="Auto, Auto">
+                    <Button Grid.Column="1" Content="X" Width="30" Height="30" BorderBrush="Red" BorderThickness="1" Background="Crimson" HorizontalContentAlignment="Right"
+                            VerticalContentAlignment="Center" FontSize="15" Click="OnClickCloseButton"/>
+                    <Label Grid.Column="0"  Width="320" Content="SETTINGS" FontWeight="Black" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Background="SlateGray"/>
+                </Grid>
+            </StackPanel>
             <!-- End of header section !-->
         
             <!-- The primary content area !-->
             <Grid Grid.Row="1" Height="240" Margin="1,5">
-                <Grid RowDefinitions="Auto, *, Auto">
+                <Grid RowDefinitions="Auto, Auto, Auto">
                     
-                    <Border Grid.Row="0" Margin="5,5,5,0"  CornerRadius="15"  Padding="0">
+                    <Border Grid.Row="0" Margin="5,0,5,0"  CornerRadius="15"  Padding="0">
                     <CheckBox Margin="5,5,5,5" FontWeight="Black"  Name="SameCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
                         <Label FontFamily="{StaticResource NunitoFont}" >Keep same file name</Label>
                     </CheckBox>
                     </Border>
                     
-                    <Border Grid.Row="1" Margin="5,5,5,5"  CornerRadius="15" Padding="0">
+                    <Border Grid.Row="1" Margin="5,0,5,5"  CornerRadius="15" Padding="0">
                     <CheckBox Margin="5,5,5,5" FontWeight="Black" IsChecked="true"  Name="RandomCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
                         <Label FontFamily="{StaticResource NunitoFont}" >Generate random file name</Label>
                     </CheckBox>
@@ -44,7 +45,7 @@
                     <Border Grid.Row="2" Margin="5,0,5,5"  CornerRadius="15" Padding="0">
                         <StackPanel>
                         
-                        <CheckBox Margin="5,5,5,5" FontWeight="Black" Name="SpecificCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
+                        <CheckBox Margin="5,0,5,5" FontWeight="Black" Name="SpecificCheckBox" IsCheckedChanged="OnCheckboxChanged" FontSize="20">
                             <Label FontFamily="{StaticResource NunitoFont}" >Choose specific file name</Label>
                         </CheckBox>
                         <TextBox Name="SpecificNameTextBox" TextChanged="OnTextBoxChanged"  Watermark="Enter a output name" Margin="10,5,5,5"/>

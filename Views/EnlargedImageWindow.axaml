@@ -7,14 +7,26 @@
         x:Class="FileConvert.Views.EnlargedImageWindow"
         x:DataType="vm:EnlargedImageViewModel"
         Icon="/Assets/TypeConvert_Logo.ico"
-        Title="EnlargedImageWindow">
-   
-    <Image Name="EnlargedImageWindowImage"> </Image>
+        Title="EnlargedImageWindow"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        CanResize="False">
     
+        
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:EnlargedImageViewModel />
     </Design.DataContext>
+    
+    
+    <StackPanel Background="Black">
+        <Grid ColumnDefinitions="Auto, Auto">
+        <Button Grid.Column="1" Content="X" Width="30" Height="30" BorderBrush="Red" BorderThickness="1" Background="Crimson" HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center" FontSize="15" Click="OnClickCloseButton"/>
+        <Label Grid.Column="0"  Width="370" Content="FileName" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Name="FileNameText" Background="SlateGray"/>
+        </Grid>
+        <Image Name="EnlargedImageWindowImage" VerticalAlignment="Center" Width="370" Height="370"> </Image>
+    </StackPanel>
     
 </Window>
