@@ -28,7 +28,7 @@
 
                 <Grid Grid.Column="0" Background="#121212">
                     <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto">
-                        <Border Grid.Row="0" Background="#404040" BorderBrush="#545454"
+                        <Border Grid.Row="0" Background="#404040" BorderBrush="#545454" Margin="5,5,5,5"
                                 BorderThickness="1"
                                 Width="200"
                                 Height="200">
@@ -244,7 +244,7 @@
                         </Grid>
                         <StackPanel Grid.Row="1" Margin="0, 25,0,0" Background="#121212">
 
-                            <Grid ColumnDefinitions="Auto, Auto, Auto">
+                            <Grid ColumnDefinitions="Auto, *, Auto">
                                 <Panel Grid.Column="0">
                                     <Button Command="{Binding OpenSettingsSelectCommand}" Width="40" Height="28"
                                             Margin="5,0,0,0" HorizontalAlignment="Left" Classes="light"
@@ -259,14 +259,14 @@
                                             BorderThickness="1"
                                             BorderBrush="Black" Command="{Binding OpenLastOutputFolderCommand}"
                                             HorizontalAlignment="Stretch" VerticalContentAlignment="Center"
-                                            Margin="5, 5, 5, 5" Width="220"
+                                            Margin="5, 5, 5, 5" 
                                             Height="30" FontWeight="Black" FontSize="10"
                                             CornerRadius="15"
                                             HorizontalContentAlignment="Center" />
                                 </Panel>
                                 <Panel Grid.Column="2">
                                     <Button Width="40" Height="28"
-                                            Margin="0,0,0,0" HorizontalAlignment="Left"  Click="OnGithubButtonClicked"
+                                            Margin="0,0,5,0" HorizontalAlignment="Right"  Click="OnGithubButtonClicked"
                                             CornerRadius="15">
                                         <Image Source="../Assets/Github.png" Width="80" Height="20"></Image>
                                     </Button>

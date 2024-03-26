@@ -135,7 +135,7 @@ public partial class MainWindow : Window
 
     public void OnGithubButtonClicked(object? sender, RoutedEventArgs e)
     {
-        (DataContext as MainWindowViewModel).OpenLinkInBrowser("https://github.com/turacept");
+        (DataContext as MainWindowViewModel)!.OpenLinkInBrowser("https://github.com/turacept");
     }
     
     private void UpdateImage()
