@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FileConvert")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5982edad7a2a7e1dc9ff1f5eeb3c73288f311b16")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce7d02daa5bc1974c2b22938064a2f5a95bc1e74")]
 [assembly: System.Reflection.AssemblyProductAttribute("FileConvert")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FileConvert")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

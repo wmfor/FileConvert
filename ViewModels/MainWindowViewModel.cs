@@ -1,353 +1,344 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Media.Imaging;
+using FileConvert.Models;
 using FileConvert.Views;
 using ReactiveUI;
+
 namespace FileConvert.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-#pragma warning disable CA1822 // Mark members as static
+#pragma warning disable CA1822
 
-    public static (int, string)[] FileTypes // || 0 = PHOTO |||| 1 = VIDEO ||||| 2 = AUDIO ||
+    // ── File-type registry ────────────────────────────────────────────────
+    // Category: 0 = Image, 1 = Video, 2 = Audio
+    public static (int, string)[] FileTypes
     {
-        get
+        get => new[]
         {
-            return new[]
-            {
-                // PHOTO SECTION
-                (0, "PNG"),
-                (0, "JPG"),
-                (0, "WEBP"),
-                (0, "ICO"),
-                (0, "BMP"),
-                (0, "TIFF"),
-                (0, "GIF"),
+            // IMAGE
+            (0, "PNG"),  (0, "JPG"),  (0, "JPEG"), (0, "WEBP"), (0, "GIF"),
+            (0, "BMP"),  (0, "TIFF"), (0, "TIF"),  (0, "ICO"),  (0, "AVIF"),
+            (0, "HEIC"),
 
-                // VIDEO SECTION
-                (1, "MP4"),
-                (1, "MOV"),
-                (1, "AVI"),
+            // VIDEO
+            (1, "MP4"),  (1, "MOV"),  (1, "AVI"),  (1, "MKV"),  (1, "WEBM"),
+            (1, "FLV"),  (1, "WMV"),  (1, "TS"),   (1, "M4V"),  (1, "GIF"),
 
-                // AUDIO SECTION
-                (2, "MP3"),
-                (2, "FLAC"),
-                (2, "WAV"),
-                (2, "OGG"),
-            };
-        }
+            // AUDIO
+            (2, "MP3"),  (2, "WAV"),  (2, "FLAC"), (2, "OGG"),  (2, "AAC"),
+            (2, "M4A"),  (2, "OPUS"), (2, "AIFF"), (2, "WMA"),
+        };
     }
 
+    // ── Selected file state ───────────────────────────────────────────────
+    public string SelectedFileName = "";
+    public string SelectedFileType = "";
 
-    public string SelectedFileName = ""; //What the raw name of the selected file is e.g "FileName", or "MyFileWestonForbes", etc.
-    public string SelectedFileType = ""; //What the selected file's type is e.g. png, jpg, etc.
+    private string? _selectedFilePath = "";
+    private string  _selectedConversionType = "PNG";
+    private string  _selectedFileNameWithType = "";
 
-    private string? _SelectedFilePath = ""; //The full path to the selected file.
-    private int _SelectedConversionTypeIndex; //The index of the dropdown option that is currently selected.
-    private string _SelectedConversionType = "PNG"; //The literal type of the selected dropdown type (e.g. png, jpg, mp3, etc)
-    private string _SelectedFileNameWithType = ""; //The name of the file, combined with the type ( e.g. "MyFile.JPG" )
+    public string SelectedFileNameWithType
+    {
+        get => _selectedFileNameWithType;
+        set => this.RaiseAndSetIfChanged(ref _selectedFileNameWithType, value);
+    }
 
-    public string SelectedFileNameWithType { get => _SelectedFileNameWithType; set => this.RaiseAndSetIfChanged(ref _SelectedFileNameWithType, value); } //The file's name with the type extension, e.g filename.ogg, or myfile.mp3.
-
-    //The path you've selected for the file you wish to convert.
     public string? SelectedFilePath
     {
-        get => _SelectedFilePath;
+        get => _selectedFilePath;
         set
         {
-            this.RaiseAndSetIfChanged(ref _SelectedFilePath, value);
-            SelectedFileNameWithType = SelectedFilePath!.Split('/').Last();
+            this.RaiseAndSetIfChanged(ref _selectedFilePath, value);
+            SelectedFileNameWithType = value != null ? Path.GetFileName(value) : "";
         }
     }
 
-    //This is used to get the string value of the combobox for output type options.
     public string SelectedConversionType
     {
-        get => _SelectedConversionType;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _SelectedConversionType, value);
-            Console.WriteLine("Selected Type Changed To " + _SelectedConversionType);
-        }
+        get => _selectedConversionType;
+        set => this.RaiseAndSetIfChanged(ref _selectedConversionType, value);
     }
 
-    //This is used for storing the specific index of the selected output type.
-    public int SelectedConversionTypeIndex
+    // ── Batch queue ───────────────────────────────────────────────────────
+    public ObservableCollection<BatchFileItem> BatchQueue { get; } = new();
+
+    public void AddFilesToBatch(IEnumerable<string> paths)
     {
-        get => _SelectedConversionTypeIndex;
-        set
+        foreach (string path in paths)
         {
-            this.RaiseAndSetIfChanged(ref _SelectedConversionTypeIndex, value);
-            Console.WriteLine("Selected Conversion Index Changed To " + _SelectedConversionTypeIndex);
-
-            SelectedConversionType = FileTypes[SelectedConversionTypeIndex].Item2;
+            string ext  = Path.GetExtension(path).TrimStart('.').ToLower();
+            string name = Path.GetFileName(path);
+            BatchQueue.Add(new BatchFileItem { FilePath = path, FileName = name, FileType = ext });
         }
     }
 
+    public void ClearBatch() => BatchQueue.Clear();
 
-    public ICommand OpenSettingsSelectCommand { get; }
+    // ── Conversion history ────────────────────────────────────────────────
+    public ObservableCollection<ConversionHistoryEntry> ConversionHistory { get; } = new();
+
+    public void AddToHistory(ConversionHistoryEntry entry)
+    {
+        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        {
+            ConversionHistory.Insert(0, entry);
+            while (ConversionHistory.Count > 50)
+                ConversionHistory.RemoveAt(ConversionHistory.Count - 1);
+        });
+    }
+
+    // ── Commands ──────────────────────────────────────────────────────────
+    public ICommand OpenSettingsSelectCommand   { get; }
     public ICommand OpenLastOutputFolderCommand { get; }
 
+    // ── Sub-window instances ──────────────────────────────────────────────
+    private SettingsWindow?          _settingsInstance;
+    private SettingsWindowViewModel? _settingsViewModel;
 
-    //The instance of the settings window.
-    private SettingsWindow? _SettingsInstance;
-    private SettingsWindowViewModel? _SettingsInstanceViewModel;
+    private EnlargedImageWindow?     _enlargedInstance;
+    private EnlargedImageViewModel?  _enlargedViewModel;
 
-    private EnlargedImageWindow? _EnlargedImageInstance;
-    private EnlargedImageViewModel? _EnlargedImageViewModel;
+    public SettingsWindowViewModel? Settings => _settingsViewModel;
 
-
-
-
-
-
-    //Window Constructor.
+    // ── Constructor ───────────────────────────────────────────────────────
     public MainWindowViewModel()
     {
-        SelectedConversionTypeIndex = 0; //Default conversion type. (PNG)
-
-        OpenSettingsSelectCommand = ReactiveCommand.Create(OpenSettingsWindow);
-        OpenLastOutputFolderCommand = ReactiveCommand.Create(OpenFolderWindow);
-
-        // ^^ UNCOMMENT THIS SECTION FOR SETTINGS FUNCTIONALITY, COMMENT TO GET LIVE PREVIEW TO WORK.
+        SelectedConversionType        = "PNG";
+        OpenSettingsSelectCommand     = ReactiveCommand.Create(OpenSettingsWindow);
+        OpenLastOutputFolderCommand   = ReactiveCommand.Create(OpenFolderWindow);
+        CreateSettingsInstance();
     }
 
+    // ── Settings window ───────────────────────────────────────────────────
     private void CreateSettingsInstance()
     {
-        if (_SettingsInstanceViewModel == null || _SettingsInstance == null)
-        {
-            _SettingsInstanceViewModel = new SettingsWindowViewModel();
-
-            _SettingsInstance = new SettingsWindow
-            {
-                DataContext = _SettingsInstanceViewModel
-            };
-            
-            _SettingsInstanceViewModel.MainWindowViewModel = this;
-            _SettingsInstance.Hide();
-        }
+        if (_settingsViewModel != null) return;
+        _settingsViewModel = SettingsWindowViewModel.LoadFromFile();
+        _settingsInstance  = new SettingsWindow { DataContext = _settingsViewModel };
+        _settingsViewModel.MainWindowViewModel = this;
+        _settingsInstance.SyncUIFromViewModel();
+        _settingsInstance.Hide();
     }
 
-    private void CreateEnlargedImageInstance()
-    {
-        if ( _EnlargedImageInstance == null)
-        {
-            _EnlargedImageViewModel = new EnlargedImageViewModel();
-
-            _EnlargedImageInstance = new EnlargedImageWindow
-            {
-                DataContext = _EnlargedImageViewModel
-            };
-            
-            _EnlargedImageViewModel.MainWindowViewModel = this;
-            _EnlargedImageInstance.Hide();
-        }
-    }
-
-
-    //Called via the 'Settings' gear button.
     private void OpenSettingsWindow()
     {
-        if (_SettingsInstance == null || _SettingsInstanceViewModel == null)
-        {
-            CreateSettingsInstance();
-        }
-
-        //If the settings window is already visible, hide it.
-        if (_SettingsInstance!.IsVisible)
-            _SettingsInstance.Hide();
-        //If the settings window hasn't been instantiated yet, create it.
-        else if (_SettingsInstance!.IsVisible == false)
-            _SettingsInstance.Show();
+        if (_settingsInstance == null) CreateSettingsInstance();
+        if (_settingsInstance!.IsVisible) _settingsInstance.Hide();
+        else                              _settingsInstance.Show();
     }
 
+    // ── Enlarged image window ─────────────────────────────────────────────
+    private void CreateEnlargedImageInstance()
+    {
+        if (_enlargedInstance != null) return;
+        _enlargedViewModel = new EnlargedImageViewModel();
+        _enlargedInstance  = new EnlargedImageWindow { DataContext = _enlargedViewModel };
+        _enlargedViewModel.MainWindowViewModel = this;
+        _enlargedInstance.Hide();
+    }
 
     public void OpenSelectedImage()
     {
-        if (_EnlargedImageInstance == null)
-        {
-            CreateEnlargedImageInstance();
-        }
+        if (_enlargedInstance == null) CreateEnlargedImageInstance();
+        if (!File.Exists(SelectedFilePath)) return;
 
-        if (!File.Exists(SelectedFilePath))
-            return;
+        if (_enlargedInstance!.IsVisible) _enlargedInstance.Hide();
+        else                              _enlargedInstance.Show();
 
-        if (_EnlargedImageInstance!.IsVisible)
-        {
-            _EnlargedImageInstance.Hide();
-            Console.WriteLine("Hiding");
-        }
-        else if (_EnlargedImageInstance.IsVisible == false)
-        {
-            _EnlargedImageInstance.Show();
-           Console.WriteLine("Showing"); 
-        }
-
-        Bitmap defaultBitmap = new Bitmap(SelectedFilePath!);
-        _EnlargedImageInstance.EnlargedImageWindowImage.Source = defaultBitmap;
-        _EnlargedImageInstance.FileNameText.Content = SelectedFileName;
+        _enlargedInstance.EnlargedImageWindowImage.Source = new Bitmap(SelectedFilePath!);
+        _enlargedInstance.FileNameText.Content = SelectedFileName;
     }
 
-
-
+    // ── Open output folder ────────────────────────────────────────────────
     private void OpenFolderWindow()
     {
-        string realDirectory = "";
-
-        string[] splitStrings = _SelectedFilePath!.Split('/');
-
-        if (_SelectedFilePath.Length > 3)
-        {
-            for (int i = 0; i < splitStrings.Length - 1; i++)
+        if (string.IsNullOrEmpty(_selectedFilePath) || _selectedFilePath.Length <= 3) return;
+        string dir = Path.GetDirectoryName(_selectedFilePath) ?? "";
+        if (Directory.Exists(dir))
+            Process.Start(new ProcessStartInfo
             {
-                realDirectory += splitStrings[i];
-
-                if (i != splitStrings.Length - 2)
-                    realDirectory += "\\";
-            }
-        }
-        else
-        {
-            Console.Write("Directory does not exist!");
-            return;
-        }
-
-
-        if (Directory.Exists(realDirectory))
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                Arguments = realDirectory,
-                FileName = "explorer.exe"
-            };
-
-            Process.Start(startInfo);
-            Console.WriteLine(realDirectory);
-        }
-        else
-        {
-
-            Console.WriteLine(realDirectory);
-            Console.Write("Directory does not exist!");
-        }
+                FileName  = "explorer.exe",
+                Arguments = $"\"{dir}\""
+            });
     }
 
+    // ── Conversion helpers ────────────────────────────────────────────────
 
     public bool GetIsUsingFfmpeg()
     {
-        //This just checks if your current selected conversion type is an AUDIO/VIDEO file, and if so, use FFMPEG, but if not, use ImageMagick.
-        return FileTypes.Any(x => (x.Item1 == 1 || x.Item1 == 2) && x.Item2.ToUpper() == SelectedConversionType.ToUpper());
+        bool outputIsAV = FileTypes.Any(x =>
+            (x.Item1 == 1 || x.Item1 == 2) &&
+            x.Item2.Equals(SelectedConversionType, StringComparison.OrdinalIgnoreCase));
+
+        if (!outputIsAV) return false;
+
+        if (SelectedConversionType.Equals("GIF", StringComparison.OrdinalIgnoreCase))
+        {
+            bool inputIsImage = FileTypes.Any(x =>
+                x.Item1 == 0 &&
+                x.Item2.Equals(SelectedFileType, StringComparison.OrdinalIgnoreCase));
+            if (inputIsImage) return false;
+        }
+
+        return true;
     }
 
     public string GetFileOutputName(string outputFilePath)
     {
-        bool doesContainDuplicateSpecificName = false;
-        bool doesContainDuplicateSameName = false;
+        if (_settingsViewModel == null) return $"ConvertedFile{Guid.NewGuid()}";
 
-        //Get all files in the chosen output directory.
+        bool dupSpecific = false, dupSame = false;
         foreach (string file in Directory.GetFiles(outputFilePath))
         {
-            string fixedFile = file.Remove(0, outputFilePath.Length + 1); //Removes the directory prefix.
-
-            if (_SettingsInstanceViewModel!.SpecificName != null && fixedFile.Contains(_SettingsInstanceViewModel!.SpecificName)) //There's already a file with the same specific name in that directory.
-                doesContainDuplicateSpecificName = true;
-            else if (fixedFile.Contains("originalFileName")) //There's already a file with the same original name in that directory.
-                doesContainDuplicateSameName = true;
-
-            //Dont need to check for Random because it uses a GUID, will basically never have a clone.
+            string name = Path.GetFileName(file);
+            if (_settingsViewModel.SpecificName != null && name.Contains(_settingsViewModel.SpecificName))
+                dupSpecific = true;
+            if (name.Contains(SelectedFileName))
+                dupSame = true;
         }
 
-        //Set the file to a random name by default.
-        string? outputFileName = default;
+        if (_settingsViewModel.IsRandomNameSelected)
+            return $"ConvertedFile{Guid.NewGuid()}";
 
+        if (_settingsViewModel.IsSameNameSelected)
+            return dupSame
+                ? $"{SelectedFileName}_{Guid.NewGuid():N}"
+                : SelectedFileName;
 
-        if (_SettingsInstanceViewModel!.IsRandomNameSelected) // RANDOM NAME
-        {
-            outputFileName = $"ConvertedFile{Guid.NewGuid()}";
-        }
-        else if (_SettingsInstanceViewModel.IsSameNameSelected) // SAME NAME
-        {
-            outputFileName = doesContainDuplicateSameName ? $"{SelectedFileName}{Guid.NewGuid()}" : SelectedFileName;
-        }
-        else if (_SettingsInstanceViewModel.IsSpecificNameSelected) //SPECIFIC NAME
-        {
-            //Make sure there's text entered in the TextBox.
-            if (_SettingsInstanceViewModel!.SpecificName != default && _SettingsInstanceViewModel!.SpecificName != "")
-            {
-                outputFileName = doesContainDuplicateSpecificName ? $"{_SettingsInstanceViewModel.SpecificName}{Guid.NewGuid()}" : _SettingsInstanceViewModel.SpecificName;
-            }
-            else //If there's no specific name entered.
-            {
-                outputFileName = $"ConvertedFile{Guid.NewGuid()}";
-            }
-        }
+        if (_settingsViewModel.IsSpecificNameSelected &&
+            !string.IsNullOrEmpty(_settingsViewModel.SpecificName))
+            return dupSpecific
+                ? $"{_settingsViewModel.SpecificName}_{Guid.NewGuid():N}"
+                : _settingsViewModel.SpecificName;
 
-        return outputFileName!;
+        return $"ConvertedFile{Guid.NewGuid()}";
     }
 
+    // ── Direct process execution (no cmd.exe wrapper) ────────────────────
 
+    /// <summary>Runs FFprobe asynchronously and returns stdout.</summary>
+    public async Task<string> RunFFprobeAsync(string args, CancellationToken ct = default)
+    {
+        try
+        {
+            var si = new ProcessStartInfo
+            {
+                FileName               = "ffprobe",
+                Arguments              = args,
+                WindowStyle            = ProcessWindowStyle.Hidden,
+                UseShellExecute        = false,
+                CreateNoWindow         = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError  = false,
+            };
+            using var proc = Process.Start(si)!;
+            using var reg  = ct.Register(() =>
+            {
+                try { if (!proc.HasExited) proc.Kill(entireProcessTree: true); } catch { }
+            });
+            string output = await proc.StandardOutput.ReadToEndAsync();
+            await proc.WaitForExitAsync(ct);
+            return output;
+        }
+        catch { return ""; }
+    }
 
+    /// <summary>Runs FFmpeg asynchronously (no output capture).</summary>
+    public async Task RunFFmpegAsync(string args, CancellationToken ct = default)
+    {
+        try
+        {
+            var si = new ProcessStartInfo
+            {
+                FileName        = "ffmpeg",
+                Arguments       = args,
+                WindowStyle     = ProcessWindowStyle.Hidden,
+                UseShellExecute = false,
+                CreateNoWindow  = true,
+            };
+            using var proc = Process.Start(si)!;
+            using var reg  = ct.Register(() =>
+            {
+                try { if (!proc.HasExited) proc.Kill(entireProcessTree: true); } catch { }
+            });
+            await proc.WaitForExitAsync(ct);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { Console.WriteLine($"FFmpeg error: {ex.Message}"); }
+    }
+
+    /// <summary>Runs FFprobe synchronously (for use inside Task.Run). Returns stdout.</summary>
+    public string RunFFprobeSync(string args, CancellationToken ct = default)
+    {
+        try
+        {
+            var si = new ProcessStartInfo
+            {
+                FileName               = "ffprobe",
+                Arguments              = args,
+                WindowStyle            = ProcessWindowStyle.Hidden,
+                UseShellExecute        = false,
+                CreateNoWindow         = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError  = false,
+            };
+            using var proc = Process.Start(si)!;
+            using var reg  = ct.Register(() =>
+            {
+                try { if (!proc.HasExited) proc.Kill(entireProcessTree: true); } catch { }
+            });
+            string output = proc.StandardOutput.ReadToEnd();
+            proc.WaitForExit();
+            return output;
+        }
+        catch { return ""; }
+    }
+
+    /// <summary>Runs FFmpeg synchronously (for use inside Task.Run).</summary>
+    public void RunFFmpegSync(string args, CancellationToken ct = default)
+    {
+        try
+        {
+            var si = new ProcessStartInfo
+            {
+                FileName        = "ffmpeg",
+                Arguments       = args,
+                WindowStyle     = ProcessWindowStyle.Hidden,
+                UseShellExecute = false,
+                CreateNoWindow  = true,
+            };
+            using var proc = Process.Start(si)!;
+            using var reg  = ct.Register(() =>
+            {
+                try { if (!proc.HasExited) proc.Kill(entireProcessTree: true); } catch { }
+            });
+            proc.WaitForExit();
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { Console.WriteLine($"FFmpeg error: {ex.Message}"); }
+    }
+
+    // ── Utilities ─────────────────────────────────────────────────────────
     public void OpenLinkInBrowser(string link)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            ProcessStartInfo windowsProcess = new ProcessStartInfo("cmd", $"/c start {link}")
-            {
-                WindowStyle = ProcessWindowStyle.Hidden
-            };
-
-            Process.Start(windowsProcess);
-        }
+            Process.Start(new ProcessStartInfo("cmd", $"/c start {link}") { WindowStyle = ProcessWindowStyle.Hidden });
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
             Process.Start("xdg-open", link);
-        }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
             Process.Start("open", link);
-        }
     }
 
-
-
-
-    public string RunCmdCommand(string arguments, bool readOutput)
-    {
-        Console.WriteLine("RUNNING ARGUMENTS -- " + arguments);
-        var output = string.Empty;
-        try
-        {
-            var startInfo = new ProcessStartInfo
-            {
-                Verb = "runas",
-                FileName = "cmd.exe",
-                Arguments = "/C " + arguments,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = false
-            };
-
-            var proc = Process.Start(startInfo);
-
-            if (readOutput)
-            {
-                output = proc!.StandardOutput.ReadToEnd();
-            }
-
-            proc!.WaitForExit(60000);
-
-            return output;
-        } catch (Exception)
-        {
-            return output;
-        }
-    }
-
-#pragma warning restore CA1822 // Mark members as static
+#pragma warning restore CA1822
 }
