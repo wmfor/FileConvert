@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Media.Imaging;
 using FileConvert.Models;
+using FileConvert.Services;
 using FileConvert.Views;
 using ReactiveUI;
 
@@ -21,28 +22,37 @@ public class MainWindowViewModel : ViewModelBase
 
     // ── File-type registry ────────────────────────────────────────────────
     // Category: 0 = Image, 1 = Video, 2 = Audio
-    public static (int, string)[] FileTypes
+    public static readonly (int Category, string Extension)[] FileTypes =
     {
-        get => new[]
-        {
-            // IMAGE
-            (0, "PNG"),  (0, "JPG"),  (0, "JPEG"), (0, "WEBP"), (0, "GIF"),
-            (0, "BMP"),  (0, "TIFF"), (0, "TIF"),  (0, "ICO"),  (0, "AVIF"),
-            (0, "HEIC"),
+        // IMAGE
+        (0, "PNG"),  (0, "JPG"),  (0, "JPEG"), (0, "WEBP"), (0, "GIF"),
+        (0, "BMP"),  (0, "TIFF"), (0, "TIF"),  (0, "ICO"),  (0, "AVIF"),
+        (0, "HEIC"),
 
-            // VIDEO
-            (1, "MP4"),  (1, "MOV"),  (1, "AVI"),  (1, "MKV"),  (1, "WEBM"),
-            (1, "FLV"),  (1, "WMV"),  (1, "TS"),   (1, "M4V"),  (1, "GIF"),
+        // VIDEO
+        (1, "MP4"),  (1, "MOV"),  (1, "AVI"),  (1, "MKV"),  (1, "WEBM"),
+        (1, "FLV"),  (1, "WMV"),  (1, "TS"),   (1, "M4V"),  (1, "GIF"),
 
-            // AUDIO
-            (2, "MP3"),  (2, "WAV"),  (2, "FLAC"), (2, "OGG"),  (2, "AAC"),
-            (2, "M4A"),  (2, "OPUS"), (2, "AIFF"), (2, "WMA"),
-        };
-    }
+        // AUDIO
+        (2, "MP3"),  (2, "WAV"),  (2, "FLAC"), (2, "OGG"),  (2, "AAC"),
+        (2, "M4A"),  (2, "OPUS"), (2, "AIFF"), (2, "WMA"),
+    };
 
     // ── Selected file state ───────────────────────────────────────────────
-    public string SelectedFileName = "";
-    public string SelectedFileType = "";
+    private string _selectedFileName = "";
+    private string _selectedFileType = "";
+
+    public string SelectedFileName
+    {
+        get => _selectedFileName;
+        set => this.RaiseAndSetIfChanged(ref _selectedFileName, value);
+    }
+
+    public string SelectedFileType
+    {
+        get => _selectedFileType;
+        set => this.RaiseAndSetIfChanged(ref _selectedFileType, value);
+    }
 
     private string? _selectedFilePath = "";
     private string  _selectedConversionType = "PNG";
@@ -128,6 +138,7 @@ public class MainWindowViewModel : ViewModelBase
         _settingsInstance  = new SettingsWindow { DataContext = _settingsViewModel };
         _settingsViewModel.MainWindowViewModel = this;
         _settingsInstance.SyncUIFromViewModel();
+        ThemeManager.Apply(_settingsViewModel.ThemeIndex);
         _settingsInstance.Hide();
     }
 
@@ -136,6 +147,19 @@ public class MainWindowViewModel : ViewModelBase
         if (_settingsInstance == null) CreateSettingsInstance();
         if (_settingsInstance!.IsVisible) _settingsInstance.Hide();
         else                              _settingsInstance.Show();
+    }
+
+    public void OpenSettingsToAppearance()
+    {
+        if (_settingsInstance == null) CreateSettingsInstance();
+        const int appearanceTabIndex = 3;
+        if (_settingsInstance!.IsVisible && _settingsInstance.IsOnTab(appearanceTabIndex))
+            _settingsInstance.Hide();
+        else
+        {
+            _settingsInstance.Show();
+            _settingsInstance.NavigateToTab(appearanceTabIndex);
+        }
     }
 
     // ── Enlarged image window ─────────────────────────────────────────────
@@ -148,24 +172,34 @@ public class MainWindowViewModel : ViewModelBase
         _enlargedInstance.Hide();
     }
 
-    public void OpenSelectedImage()
+    public void OpenSelectedImage(Bitmap? previewBitmap = null)
     {
         if (_enlargedInstance == null) CreateEnlargedImageInstance();
         if (!File.Exists(SelectedFilePath)) return;
 
-        if (_enlargedInstance!.IsVisible) _enlargedInstance.Hide();
-        else                              _enlargedInstance.Show();
+        if (_enlargedInstance!.IsVisible) { _enlargedInstance.Hide(); return; }
 
-        _enlargedInstance.EnlargedImageWindowImage.Source = new Bitmap(SelectedFilePath!);
+        Bitmap? bmp = previewBitmap;
+        if (bmp == null)
+        {
+            try { bmp = new Bitmap(SelectedFilePath!); }
+            catch { return; }
+        }
+
+        _enlargedInstance.EnlargedImageWindowImage.Source = bmp;
         _enlargedInstance.FileNameText.Content = SelectedFileName;
+        _enlargedInstance.Show();
     }
 
     // ── Open output folder ────────────────────────────────────────────────
     private void OpenFolderWindow()
     {
-        if (string.IsNullOrEmpty(_selectedFilePath) || _selectedFilePath.Length <= 3) return;
-        string dir = Path.GetDirectoryName(_selectedFilePath) ?? "";
-        if (Directory.Exists(dir))
+        string? dir = null;
+        if (!string.IsNullOrEmpty(_settingsViewModel?.LastUsedFolder))
+            dir = _settingsViewModel.LastUsedFolder;
+        else if (!string.IsNullOrEmpty(_selectedFilePath) && _selectedFilePath.Length > 3)
+            dir = Path.GetDirectoryName(_selectedFilePath);
+        if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
             Process.Start(new ProcessStartInfo
             {
                 FileName  = "explorer.exe",
@@ -198,18 +232,21 @@ public class MainWindowViewModel : ViewModelBase
     {
         if (_settingsViewModel == null) return $"ConvertedFile{Guid.NewGuid()}";
 
-        bool dupSpecific = false, dupSame = false;
-        foreach (string file in Directory.GetFiles(outputFilePath))
-        {
-            string name = Path.GetFileName(file);
-            if (_settingsViewModel.SpecificName != null && name.Contains(_settingsViewModel.SpecificName))
-                dupSpecific = true;
-            if (name.Contains(SelectedFileName))
-                dupSame = true;
-        }
-
         if (_settingsViewModel.IsRandomNameSelected)
             return $"ConvertedFile{Guid.NewGuid()}";
+
+        bool dupSpecific = false, dupSame = false;
+        if (Directory.Exists(outputFilePath))
+        {
+            foreach (string file in Directory.GetFiles(outputFilePath))
+            {
+                string name = Path.GetFileName(file);
+                if (_settingsViewModel.SpecificName != null && name.Contains(_settingsViewModel.SpecificName))
+                    dupSpecific = true;
+                if (name.Contains(SelectedFileName))
+                    dupSame = true;
+            }
+        }
 
         if (_settingsViewModel.IsSameNameSelected)
             return dupSame

@@ -5,36 +5,40 @@
         xmlns:vm="using:FileConvert.ViewModels"
         x:DataType="vm:SettingsWindowViewModel"
         mc:Ignorable="d"
-        d:DesignWidth="460" d:DesignHeight="590"
-        Width="460" Height="590"
+        d:DesignWidth="480" d:DesignHeight="640"
+        Width="480" Height="700"
+        MinWidth="400" MinHeight="520"
         x:Class="FileConvert.Views.SettingsWindow"
         Title="Settings"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
-        CanResize="False"
-        Background="#0f0f0f">
+        CanResize="True"
+        Background="{DynamicResource ThemeWindowBg}">
 
     <Window.Styles>
 
+        <!-- ══ SETTING LABELS ══ -->
         <Style Selector="TextBlock.settingLabel">
             <Setter Property="FontSize"          Value="12"/>
-            <Setter Property="Foreground"        Value="#cccccc"/>
+            <Setter Property="Foreground"        Value="#9095c0"/>
             <Setter Property="FontFamily"        Value="{StaticResource NunitoFont}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
+
+        <!-- ══ GROUP HEADERS ══ -->
         <Style Selector="TextBlock.groupHeader">
             <Setter Property="FontSize"      Value="9"/>
             <Setter Property="FontWeight"    Value="Bold"/>
-            <Setter Property="Foreground"    Value="#444444"/>
+            <Setter Property="Foreground"    Value="#2e3058"/>
             <Setter Property="LetterSpacing" Value="2"/>
-            <Setter Property="Margin"        Value="0,10,0,6"/>
+            <Setter Property="Margin"        Value="0,14,0,8"/>
         </Style>
 
-        <!-- Radio-like option chip buttons in settings -->
+        <!-- ══ OPTION CHIP (radio-like) ══ -->
         <Style Selector="Button.optChip">
-            <Setter Property="Background"      Value="#1e1e1e"/>
-            <Setter Property="Foreground"      Value="#888888"/>
-            <Setter Property="BorderBrush"     Value="#333333"/>
+            <Setter Property="Background"      Value="{DynamicResource ThemeChipBg}"/>
+            <Setter Property="Foreground"      Value="#555888"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource ThemeInputBorder}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height"          Value="30"/>
             <Setter Property="FontSize"        Value="11"/>
@@ -42,122 +46,179 @@
             <Setter Property="Padding"         Value="14,0"/>
             <Setter Property="CornerRadius"    Value="15"/>
             <Setter Property="Margin"          Value="0,0,4,0"/>
-            <Setter Property="Cursor"                       Value="Hand"/>
-            <Setter Property="FontFamily"               Value="{StaticResource NunitoFont}"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="FontFamily"      Value="{StaticResource NunitoFont}"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment"   Value="Center"/>
         </Style>
         <Style Selector="Button.optChip /template/ ContentPresenter">
-            <Setter Property="Background" Value="#1e1e1e"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeChipBg}"/>
         </Style>
         <Style Selector="Button.optChip:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#282828"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeChipHover}"/>
         </Style>
         <Style Selector="Button.optChip.optActive">
-            <Setter Property="Foreground"  Value="White"/>
-            <Setter Property="BorderBrush" Value="#0063b1"/>
+            <Setter Property="Foreground"  Value="{DynamicResource ThemeAccentLight}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent}"/>
         </Style>
         <Style Selector="Button.optChip.optActive /template/ ContentPresenter">
-            <Setter Property="Background" Value="#0d2a4a"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeChipActiveBg}"/>
+        </Style>
+        <Style Selector="Button.optChip.optActive:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ThemeChipActiveBgHover}"/>
         </Style>
 
-        <!-- Preset chip (smaller) -->
+        <!-- ══ PRESET CHIP (smaller) ══ -->
         <Style Selector="Button.presetChip">
-            <Setter Property="Background"      Value="#1a1a1a"/>
-            <Setter Property="Foreground"      Value="#777777"/>
-            <Setter Property="BorderBrush"     Value="#2e2e2e"/>
+            <Setter Property="Background"      Value="{DynamicResource ThemeChipBg}"/>
+            <Setter Property="Foreground"      Value="#454870"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource ThemeInputBorder}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height"          Value="26"/>
             <Setter Property="FontSize"        Value="10"/>
             <Setter Property="FontWeight"      Value="Bold"/>
-            <Setter Property="Padding"         Value="10,0"/>
+            <Setter Property="Padding"         Value="12,0"/>
             <Setter Property="CornerRadius"    Value="13"/>
-            <Setter Property="Margin"          Value="0,0,3,3"/>
-            <Setter Property="Cursor"                       Value="Hand"/>
-            <Setter Property="FontFamily"               Value="{StaticResource NunitoFont}"/>
+            <Setter Property="Margin"          Value="0,0,4,4"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="FontFamily"      Value="{StaticResource NunitoFont}"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment"   Value="Center"/>
         </Style>
         <Style Selector="Button.presetChip /template/ ContentPresenter">
-            <Setter Property="Background" Value="#1a1a1a"/>
-        </Style>
-        <Style Selector="Button.presetChip.presetActive">
-            <Setter Property="Foreground"  Value="White"/>
-            <Setter Property="BorderBrush" Value="#0063b1"/>
-        </Style>
-        <Style Selector="Button.presetChip.presetActive /template/ ContentPresenter">
-            <Setter Property="Background" Value="#0d2a4a"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeChipBg}"/>
         </Style>
         <Style Selector="Button.presetChip:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#242424"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeChipHover}"/>
+        </Style>
+        <Style Selector="Button.presetChip.presetActive">
+            <Setter Property="Foreground"  Value="{DynamicResource ThemeAccentLight}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccent}"/>
+        </Style>
+        <Style Selector="Button.presetChip.presetActive /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ThemeChipActiveBg}"/>
+        </Style>
+        <Style Selector="Button.presetChip.presetActive:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ThemeChipActiveBgHover}"/>
         </Style>
 
-        <!-- Toggle switch style for checkboxes -->
+        <!-- ══ THEME CHIP (larger, themed color dot) ══ -->
+        <Style Selector="Button.themeChip">
+            <Setter Property="Background"      Value="{DynamicResource ThemeChipBg}"/>
+            <Setter Property="Foreground"      Value="#505580"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource ThemeInputBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height"          Value="34"/>
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="Padding"         Value="14,0"/>
+            <Setter Property="CornerRadius"    Value="8"/>
+            <Setter Property="Margin"          Value="0,0,6,6"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="FontFamily"      Value="{StaticResource NunitoFont}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment"   Value="Center"/>
+        </Style>
+        <Style Selector="Button.themeChip /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ThemeChipBg}"/>
+        </Style>
+        <Style Selector="Button.themeChip:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ThemeChipHover}"/>
+        </Style>
+        <Style Selector="Button.themeChip.presetActive">
+            <Setter Property="Foreground"      Value="{DynamicResource ThemeAccentLight}"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource ThemeAccent}"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+        </Style>
+        <Style Selector="Button.themeChip.presetActive /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ThemeChipActiveBg}"/>
+        </Style>
+        <Style Selector="Button.themeChip.presetActive:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ThemeChipActiveBgHover}"/>
+        </Style>
+
+        <!-- ══ CHECKBOXES ══ -->
         <Style Selector="CheckBox">
-            <Setter Property="Foreground"   Value="#bbbbbb"/>
-            <Setter Property="FontSize"     Value="12"/>
-            <Setter Property="FontFamily"   Value="{StaticResource NunitoFont}"/>
+            <Setter Property="Foreground" Value="#7a80b0"/>
+            <Setter Property="FontSize"   Value="12"/>
+            <Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
         </Style>
 
-        <!-- Tab items -->
+        <!-- ══ TABS ══ -->
         <Style Selector="TabItem">
-            <Setter Property="Foreground"   Value="#666666"/>
-            <Setter Property="FontSize"     Value="11"/>
-            <Setter Property="FontWeight"   Value="SemiBold"/>
-            <Setter Property="FontFamily"   Value="{StaticResource NunitoFont}"/>
-            <Setter Property="Padding"      Value="14,8"/>
+            <Setter Property="Foreground"  Value="#454870"/>
+            <Setter Property="FontSize"    Value="11"/>
+            <Setter Property="FontWeight"  Value="SemiBold"/>
+            <Setter Property="FontFamily"  Value="{StaticResource NunitoFont}"/>
+            <Setter Property="Padding"     Value="14,10"/>
         </Style>
         <Style Selector="TabItem:selected">
-            <Setter Property="Foreground"   Value="White"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeAccentLight}"/>
+        </Style>
+
+        <!-- ══ TEXTBOXES ══ -->
+        <Style Selector="TextBox">
+            <Setter Property="Background"  Value="{DynamicResource ThemeInputBg}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeInputBorder}"/>
+            <Setter Property="Foreground"  Value="#9095c0"/>
+            <Setter Property="FontFamily"  Value="{StaticResource NunitoFont}"/>
         </Style>
 
     </Window.Styles>
 
-    <Grid RowDefinitions="40, *, Auto">
+    <Grid RowDefinitions="48, *, Auto">
 
         <!-- ── Custom title bar ── -->
-        <Grid Grid.Row="0" Background="#080808"
+        <Grid Grid.Row="0" Background="{DynamicResource ThemeHeaderBg}"
               ColumnDefinitions="*, Auto">
-            <TextBlock Grid.Column="0"
-                       Text="Settings"
-                       Foreground="White" FontSize="13" FontWeight="Bold"
-                       FontFamily="{StaticResource NunitoFont}"
-                       VerticalAlignment="Center" Margin="14,0"/>
+            <Border Grid.Column="0"
+                    Background="Transparent"
+                    IsHitTestVisible="True">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                            Margin="16,0">
+                    <TextBlock Text="Settings"
+                               Foreground="#e8eaff" FontSize="13" FontWeight="Bold"
+                               FontFamily="{StaticResource NunitoFont}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
             <Button Grid.Column="1"
                     Content="✕"
                     Click="OnClickCloseButton"
                     Background="Transparent"
-                    Foreground="#666666"
+                    Foreground="#454870"
                     BorderThickness="0"
-                    Width="40" Height="40"
+                    Width="48" Height="48"
                     FontSize="13" FontWeight="Bold"
                     VerticalContentAlignment="Center"
-                    HorizontalContentAlignment="Center"/>
+                    HorizontalContentAlignment="Center"
+                    Cursor="Hand"/>
         </Grid>
 
-        <!-- ── Tabbed content ── -->
-        <TabControl Grid.Row="1" Background="Transparent">
+        <!-- Top separator -->
+        <Border Grid.Row="0" VerticalAlignment="Bottom"
+                Height="1" Background="{DynamicResource ThemeSeparator}"/>
+
+        <!-- ── Tabbed settings content ── -->
+        <TabControl Grid.Row="1" x:Name="SettingsTabControl" Background="Transparent">
 
             <!-- ════ TAB: OUTPUT ════ -->
             <TabItem Header="Output">
-                <ScrollViewer Padding="14,4">
+                <ScrollViewer Padding="16,4,16,16">
                     <StackPanel>
 
-                        <!-- Filename -->
                         <TextBlock Text="FILE NAMING" Classes="groupHeader"/>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <Button x:Name="OptRandom"   Content="Random"    Classes="optChip optActive" Click="OnFilenameOptClicked" Tag="RandomCheckBox"/>
-                            <Button x:Name="OptSameName" Content="Keep Name" Classes="optChip"           Click="OnFilenameOptClicked" Tag="SameCheckBox"/>
-                            <Button x:Name="OptSpecific" Content="Custom"    Classes="optChip"           Click="OnFilenameOptClicked" Tag="SpecificCheckBox"/>
+                            <Button x:Name="OptRandom"   Content="Random"     Classes="optChip optActive" Click="OnFilenameOptClicked" Tag="RandomCheckBox"/>
+                            <Button x:Name="OptSameName" Content="Keep Name"  Classes="optChip"           Click="OnFilenameOptClicked" Tag="SameCheckBox"/>
+                            <Button x:Name="OptSpecific" Content="Custom"     Classes="optChip"           Click="OnFilenameOptClicked" Tag="SpecificCheckBox"/>
                         </StackPanel>
                         <TextBox x:Name="SpecificNameBox"
                                  Watermark="Enter output filename…"
                                  IsVisible="False"
-                                 Background="#1e1e1e" BorderBrush="#333333"
-                                 Height="32" Margin="0,0,0,6"
+                                 Height="34" Margin="0,0,0,6"
                                  TextChanged="OnSpecificNameChanged"/>
 
-                        <!-- Output folder -->
                         <TextBlock Text="OUTPUT FOLDER" Classes="groupHeader"/>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <Button x:Name="FolderAsk"    Content="Ask each time" Classes="optChip optActive" Click="OnFolderOptClicked" Tag="AskEachTime"/>
@@ -169,22 +230,20 @@
                             <TextBox Grid.Column="0"
                                      x:Name="CustomFolderBox"
                                      Watermark="Output folder path…"
-                                     Background="#1e1e1e" BorderBrush="#333333"
-                                     Height="32"
+                                     Height="34"
                                      TextChanged="OnCustomFolderChanged"/>
                             <Button Grid.Column="1"
                                     Content="Browse"
                                     Classes="optChip"
-                                    Margin="4,0,0,0"
+                                    Margin="6,0,0,0"
                                     Click="OnBrowseCustomFolderClicked"/>
                         </Grid>
 
-                        <!-- After conversion action -->
                         <TextBlock Text="AFTER CONVERSION" Classes="groupHeader"/>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <Button x:Name="AfterNothing"    Content="Do nothing"    Classes="optChip optActive" Click="OnAfterOptClicked" Tag="DoNothing"/>
-                            <Button x:Name="AfterOpenFolder" Content="Open folder"   Classes="optChip"           Click="OnAfterOptClicked" Tag="OpenFolder"/>
-                            <Button x:Name="AfterOpenFile"   Content="Open file"     Classes="optChip"           Click="OnAfterOptClicked" Tag="OpenFile"/>
+                            <Button x:Name="AfterNothing"    Content="Do nothing"  Classes="optChip optActive" Click="OnAfterOptClicked" Tag="DoNothing"/>
+                            <Button x:Name="AfterOpenFolder" Content="Open folder" Classes="optChip"           Click="OnAfterOptClicked" Tag="OpenFolder"/>
+                            <Button x:Name="AfterOpenFile"   Content="Open file"   Classes="optChip"           Click="OnAfterOptClicked" Tag="OpenFile"/>
                         </StackPanel>
 
                     </StackPanel>
@@ -193,56 +252,53 @@
 
             <!-- ════ TAB: ENCODING ════ -->
             <TabItem Header="Encoding">
-                <ScrollViewer Padding="14,4">
+                <ScrollViewer Padding="16,4,16,16">
                     <StackPanel>
 
-                        <!-- Video preset -->
                         <TextBlock Text="VIDEO ENCODING PRESET" Classes="groupHeader"/>
-                        <TextBlock Text="Controls speed vs. compression. Slower = smaller file at same quality."
-                                   Foreground="#444444" FontSize="10"
+                        <TextBlock Text="Speed vs. compression tradeoff — slower means smaller files at the same quality."
+                                   Foreground="#272950" FontSize="10"
                                    FontFamily="{StaticResource NunitoFont}"
-                                   Margin="0,0,0,8" TextWrapping="Wrap"/>
-                        <WrapPanel x:Name="VideoPresetPanel" Orientation="Horizontal" Margin="0,0,0,12">
-                            <Button Classes="presetChip" Content="ultrafast" Tag="0" Click="OnVideoPresetClicked"/>
-                            <Button Classes="presetChip" Content="superfast" Tag="1" Click="OnVideoPresetClicked"/>
-                            <Button Classes="presetChip" Content="veryfast"  Tag="2" Click="OnVideoPresetClicked"/>
-                            <Button Classes="presetChip" Content="faster"    Tag="3" Click="OnVideoPresetClicked"/>
-                            <Button Classes="presetChip presetActive" Content="fast"  Tag="4" Click="OnVideoPresetClicked"/>
-                            <Button Classes="presetChip" Content="medium"    Tag="5" Click="OnVideoPresetClicked"/>
-                            <Button Classes="presetChip" Content="slow"      Tag="6" Click="OnVideoPresetClicked"/>
-                            <Button Classes="presetChip" Content="slower"    Tag="7" Click="OnVideoPresetClicked"/>
-                            <Button Classes="presetChip" Content="veryslow"  Tag="8" Click="OnVideoPresetClicked"/>
+                                   Margin="0,0,0,10" TextWrapping="Wrap"/>
+                        <WrapPanel x:Name="VideoPresetPanel" Orientation="Horizontal" Margin="0,0,0,14">
+                            <Button Classes="presetChip"             Content="ultrafast" Tag="0" Click="OnVideoPresetClicked"/>
+                            <Button Classes="presetChip"             Content="superfast" Tag="1" Click="OnVideoPresetClicked"/>
+                            <Button Classes="presetChip"             Content="veryfast"  Tag="2" Click="OnVideoPresetClicked"/>
+                            <Button Classes="presetChip"             Content="faster"    Tag="3" Click="OnVideoPresetClicked"/>
+                            <Button Classes="presetChip presetActive" Content="fast"     Tag="4" Click="OnVideoPresetClicked"/>
+                            <Button Classes="presetChip"             Content="medium"    Tag="5" Click="OnVideoPresetClicked"/>
+                            <Button Classes="presetChip"             Content="slow"      Tag="6" Click="OnVideoPresetClicked"/>
+                            <Button Classes="presetChip"             Content="slower"    Tag="7" Click="OnVideoPresetClicked"/>
+                            <Button Classes="presetChip"             Content="veryslow"  Tag="8" Click="OnVideoPresetClicked"/>
                         </WrapPanel>
 
-                        <!-- Audio bitrate -->
                         <TextBlock Text="DEFAULT AUDIO BITRATE" Classes="groupHeader"/>
-                        <StackPanel x:Name="AudioBitratePanel" Orientation="Horizontal" Margin="0,0,0,12">
-                            <Button Classes="presetChip"             Content="96k"  Tag="0" Click="OnAudioBitrateClicked"/>
-                            <Button Classes="presetChip"             Content="128k" Tag="1" Click="OnAudioBitrateClicked"/>
+                        <WrapPanel x:Name="AudioBitratePanel" Orientation="Horizontal" Margin="0,0,0,14">
+                            <Button Classes="presetChip"              Content="96k"  Tag="0" Click="OnAudioBitrateClicked"/>
+                            <Button Classes="presetChip"              Content="128k" Tag="1" Click="OnAudioBitrateClicked"/>
                             <Button Classes="presetChip presetActive" Content="192k" Tag="2" Click="OnAudioBitrateClicked"/>
-                            <Button Classes="presetChip"             Content="256k" Tag="3" Click="OnAudioBitrateClicked"/>
-                            <Button Classes="presetChip"             Content="320k" Tag="4" Click="OnAudioBitrateClicked"/>
-                        </StackPanel>
+                            <Button Classes="presetChip"              Content="256k" Tag="3" Click="OnAudioBitrateClicked"/>
+                            <Button Classes="presetChip"              Content="320k" Tag="4" Click="OnAudioBitrateClicked"/>
+                        </WrapPanel>
 
-                        <!-- Image -->
                         <TextBlock Text="IMAGE OPTIONS" Classes="groupHeader"/>
                         <CheckBox x:Name="StripMetadataCheck"
                                   Content="Strip EXIF / metadata from images"
                                   IsCheckedChanged="OnStripMetadataChanged"
-                                  Margin="0,0,0,8"/>
+                                  Margin="0,0,0,14"/>
 
-                        <!-- Performance -->
                         <TextBlock Text="PERFORMANCE" Classes="groupHeader"/>
                         <CheckBox x:Name="HWAccelCheck"
-                                  Content="Hardware-accelerated decode (-hwaccel auto)"
+                                  Content="Hardware-accelerated decode  (-hwaccel auto)"
                                   IsCheckedChanged="OnHWAccelChanged"
-                                  Margin="0,0,0,8"/>
+                                  Margin="0,0,0,14"/>
+
                         <TextBlock Text="ENCODING THREADS" Classes="groupHeader"/>
-                        <TextBlock Text="Number of CPU threads for FFmpeg. Auto lets FFmpeg decide."
-                                   Foreground="#444444" FontSize="10"
+                        <TextBlock Text="Number of CPU threads passed to FFmpeg. Auto lets FFmpeg decide."
+                                   Foreground="#272950" FontSize="10"
                                    FontFamily="{StaticResource NunitoFont}"
-                                   Margin="0,0,0,6" TextWrapping="Wrap"/>
-                        <WrapPanel x:Name="ThreadCountPanel" Orientation="Horizontal" Margin="0,0,0,6">
+                                   Margin="0,0,0,8" TextWrapping="Wrap"/>
+                        <WrapPanel x:Name="ThreadCountPanel" Orientation="Horizontal" Margin="0,0,0,14">
                             <Button Classes="presetChip presetActive" Content="Auto" Tag="0" Click="OnThreadCountClicked"/>
                             <Button Classes="presetChip"              Content="2"    Tag="1" Click="OnThreadCountClicked"/>
                             <Button Classes="presetChip"              Content="4"    Tag="2" Click="OnThreadCountClicked"/>
@@ -251,10 +307,10 @@
                         </WrapPanel>
 
                         <TextBlock Text="BATCH PARALLEL CONVERSIONS" Classes="groupHeader"/>
-                        <TextBlock Text="Max simultaneous files converted in Batch Mode. Higher = faster but more CPU."
-                                   Foreground="#444444" FontSize="10"
+                        <TextBlock Text="Max simultaneous files in Batch Mode. Higher is faster but uses more CPU."
+                                   Foreground="#272950" FontSize="10"
                                    FontFamily="{StaticResource NunitoFont}"
-                                   Margin="0,0,0,6" TextWrapping="Wrap"/>
+                                   Margin="0,0,0,8" TextWrapping="Wrap"/>
                         <WrapPanel x:Name="ParallelCountPanel" Orientation="Horizontal" Margin="0,0,0,6">
                             <Button Classes="presetChip presetActive" Content="1 (Sequential)" Tag="0" Click="OnParallelCountClicked"/>
                             <Button Classes="presetChip"              Content="2 parallel"      Tag="1" Click="OnParallelCountClicked"/>
@@ -267,22 +323,23 @@
 
             <!-- ════ TAB: GENERAL ════ -->
             <TabItem Header="General">
-                <ScrollViewer Padding="14,4">
+                <ScrollViewer Padding="16,4,16,16">
                     <StackPanel>
 
                         <TextBlock Text="FILE HANDLING" Classes="groupHeader"/>
                         <CheckBox x:Name="OverwriteCheck"
-                                  Content="Overwrite existing files (passes -y to FFmpeg)"
+                                  Content="Overwrite existing files  (passes -y to FFmpeg)"
                                   IsCheckedChanged="OnOverwriteChanged"
-                                  Margin="0,0,0,10"/>
+                                  Margin="0,0,0,20"/>
 
                         <TextBlock Text="ABOUT" Classes="groupHeader"/>
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="FileConvert  v0.3b"
-                                       Foreground="#555555" FontSize="11"
-                                       FontFamily="{StaticResource NunitoFont}"/>
-                            <TextBlock Text="Uses FFmpeg for audio/video and Magick.NET for images."
-                                       Foreground="#3a3a3a" FontSize="10"
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="FileConvert  v0.4"
+                                       Foreground="#30325a" FontSize="12"
+                                       FontFamily="{StaticResource NunitoFont}"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="Audio and video conversion via FFmpeg. Image conversion via Magick.NET."
+                                       Foreground="#20224a" FontSize="10"
                                        FontFamily="{StaticResource NunitoFont}"
                                        TextWrapping="Wrap"/>
                         </StackPanel>
@@ -291,10 +348,63 @@
                 </ScrollViewer>
             </TabItem>
 
+            <!-- ════ TAB: APPEARANCE ════ -->
+            <TabItem Header="Appearance">
+                <ScrollViewer Padding="16,4,16,16">
+                    <StackPanel>
+
+                        <TextBlock Text="COLOR THEME" Classes="groupHeader"/>
+                        <TextBlock Text="Choose a color palette for the application interface."
+                                   Foreground="#272950" FontSize="10"
+                                   FontFamily="{StaticResource NunitoFont}"
+                                   Margin="0,0,0,12" TextWrapping="Wrap"/>
+
+                        <WrapPanel x:Name="ThemeChipPanel" Orientation="Horizontal" Margin="0,0,0,16">
+                            <Button Classes="themeChip presetActive" Tag="0" Click="OnThemeChipClicked">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Border Width="10" Height="10" CornerRadius="5" Background="#6366f1" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Indigo" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="themeChip" Tag="1" Click="OnThemeChipClicked">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Border Width="10" Height="10" CornerRadius="5" Background="#3b82f6" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Midnight" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="themeChip" Tag="2" Click="OnThemeChipClicked">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Border Width="10" Height="10" CornerRadius="5" Background="#f59e0b" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Ember" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="themeChip" Tag="3" Click="OnThemeChipClicked">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Border Width="10" Height="10" CornerRadius="5" Background="#10b981" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Forest" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="themeChip" Tag="4" Click="OnThemeChipClicked">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Border Width="10" Height="10" CornerRadius="5" Background="#f43f5e" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Rose" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </WrapPanel>
+
+                        <TextBlock x:Name="ActiveThemeLabel"
+                                   Foreground="#3a3e68"
+                                   FontSize="11"
+                                   FontFamily="{StaticResource NunitoFont}"/>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
         </TabControl>
 
-        <!-- ── Footer divider ── -->
-        <Border Grid.Row="2" Height="1" Background="#1e1e1e"/>
+        <!-- Bottom separator -->
+        <Border Grid.Row="2" Height="1" Background="{DynamicResource ThemeSeparator}"/>
 
     </Grid>
 </Window>

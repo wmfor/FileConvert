@@ -13,7 +13,29 @@
         <FluentTheme/>
     </Application.Styles>
              
-             <Application.Resources>
-                 <FontFamily x:Key="NunitoFont">avares://FileConvert/Assets/Fonts/Nunito#Nunito</FontFamily>
-             </Application.Resources>
+    <Application.Resources>
+        <FontFamily x:Key="NunitoFont">avares://FileConvert/Assets/Fonts/Nunito#Nunito</FontFamily>
+
+        <!-- Theme resources — values set at runtime by ThemeManager.Apply() — defaults: Indigo -->
+        <SolidColorBrush x:Key="ThemeWindowBg"          Color="#0c0d16"/>
+        <SolidColorBrush x:Key="ThemeHeaderBg"          Color="#08091a"/>
+        <SolidColorBrush x:Key="ThemeLeftPanelBg"       Color="#0b0c1a"/>
+        <SolidColorBrush x:Key="ThemeRightPanelBg"      Color="#0d0e1e"/>
+        <SolidColorBrush x:Key="ThemeCardBg"            Color="#14152c"/>
+        <SolidColorBrush x:Key="ThemeCardBorder"        Color="#1e2244"/>
+        <SolidColorBrush x:Key="ThemeAccent"            Color="#6366f1"/>
+        <SolidColorBrush x:Key="ThemeAccentLight"       Color="#c7d2fe"/>
+        <SolidColorBrush x:Key="ThemeChipActiveBg"      Color="#1b1e64"/>
+        <SolidColorBrush x:Key="ThemeChipActiveBgHover" Color="#222676"/>
+        <SolidColorBrush x:Key="ThemePanelTabActiveBg"  Color="#1e2264"/>
+        <SolidColorBrush x:Key="ThemeTabActiveBg"       Color="#232768"/>
+        <SolidColorBrush x:Key="ThemeConvertBtnBg"      Color="#4f46e5"/>
+        <SolidColorBrush x:Key="ThemeConvertBtnBorder"  Color="#6060ff"/>
+        <SolidColorBrush x:Key="ThemeSeparator"         Color="#131640"/>
+        <SolidColorBrush x:Key="ThemeListItemSelected"  Color="#111430"/>
+        <SolidColorBrush x:Key="ThemeChipBg"            Color="#101228"/>
+        <SolidColorBrush x:Key="ThemeChipHover"         Color="#181b38"/>
+        <SolidColorBrush x:Key="ThemeInputBg"           Color="#09091e"/>
+        <SolidColorBrush x:Key="ThemeInputBorder"       Color="#1c1f40"/>
+    </Application.Resources>
 </Application>

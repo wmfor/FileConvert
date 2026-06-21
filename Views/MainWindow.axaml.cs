@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
@@ -59,7 +60,7 @@ public partial class MainWindow : Window
     private string _atvColor             = "1a1a1a";
 
     // ── File type filter constants ─────────────────────────────────────────
-    private static readonly FilePickerFileType AllSupportedTypes = new("All Supported Files")
+    private readonly static FilePickerFileType AllSupportedTypes = new FilePickerFileType("All Supported Files")
     {
         Patterns = new[]
         {
@@ -69,15 +70,15 @@ public partial class MainWindow : Window
             "*.mp3","*.wav","*.flac","*.ogg","*.aac","*.m4a","*.opus","*.aiff","*.wma"
         }
     };
-    private static readonly FilePickerFileType ImageTypes = new("Image Files")
+    private readonly static FilePickerFileType ImageTypes = new FilePickerFileType("Image Files")
     {
         Patterns = new[] { "*.png","*.jpg","*.jpeg","*.webp","*.gif","*.bmp","*.tiff","*.tif","*.ico","*.avif","*.heic" }
     };
-    private static readonly FilePickerFileType VideoTypes = new("Video Files")
+    private readonly static FilePickerFileType VideoTypes = new FilePickerFileType("Video Files")
     {
         Patterns = new[] { "*.mp4","*.mov","*.avi","*.mkv","*.webm","*.flv","*.wmv","*.ts","*.m4v" }
     };
-    private static readonly FilePickerFileType AudioTypes = new("Audio Files")
+    private readonly static FilePickerFileType AudioTypes = new FilePickerFileType("Audio Files")
     {
         Patterns = new[] { "*.mp3","*.wav","*.flac","*.ogg","*.aac","*.m4a","*.opus","*.aiff","*.wma" }
     };
@@ -171,14 +172,16 @@ public partial class MainWindow : Window
         var files = e.Data.GetFiles()?.ToList();
         if (files == null || files.Count == 0) return;
 
-        var paths = files.Select(f => f.Path.ToString().Remove(0, 8)).ToList();
+        var paths = files.Select(f => f.Path.LocalPath).ToList();
 
         if (paths.Count > 1 && !_isBatchMode)
         {
             _isBatchMode = true;
+            FileModeButton.Classes.Set("batchActive",  false);
             BatchModeToggle.Classes.Set("batchActive", true);
             SingleFilePanel.IsVisible    = false;
             BatchPanel.IsVisible         = true;
+            HistoryPanel.IsVisible       = false;
             GenerateButton.IsVisible     = false;
             BatchConvertButton.IsVisible = true;
         }
@@ -261,13 +264,38 @@ public partial class MainWindow : Window
     }
 
     // ──────────────────────────────────────────────────────────────────────
+    //  LEFT PANEL TAB MANAGEMENT
+    // ──────────────────────────────────────────────────────────────────────
+
+    private void OnFileModeButtonClicked(object? sender, RoutedEventArgs e)
+    {
+        _isBatchMode      = false;
+        _isHistoryVisible = false;
+
+        FileModeButton.Classes.Set("batchActive",  true);
+        BatchModeToggle.Classes.Set("batchActive", false);
+        HistoryToggle.Classes.Set("batchActive",   false);
+
+        SingleFilePanel.IsVisible    = true;
+        BatchPanel.IsVisible         = false;
+        HistoryPanel.IsVisible       = false;
+        GenerateButton.IsVisible     = true;
+        BatchConvertButton.IsVisible = false;
+
+        IsGenerationViable();
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
     //  HISTORY PANEL
     // ──────────────────────────────────────────────────────────────────────
 
     private void OnHistoryToggleClicked(object? sender, RoutedEventArgs e)
     {
         _isHistoryVisible = !_isHistoryVisible;
-        HistoryToggle.Classes.Set("batchActive", _isHistoryVisible);
+
+        FileModeButton.Classes.Set("batchActive",  !_isHistoryVisible && !_isBatchMode);
+        BatchModeToggle.Classes.Set("batchActive", !_isHistoryVisible && _isBatchMode);
+        HistoryToggle.Classes.Set("batchActive",   _isHistoryVisible);
 
         HistoryPanel.IsVisible = _isHistoryVisible;
         if (_isHistoryVisible)
@@ -287,21 +315,36 @@ public partial class MainWindow : Window
         (DataContext as MainWindowViewModel)!.ConversionHistory.Clear();
     }
 
+    private void OnHistoryItemClicked(object? sender, PointerPressedEventArgs e)
+    {
+        if (HistoryListBox.SelectedItem is not ConversionHistoryEntry entry) return;
+        if (string.IsNullOrEmpty(entry.OutputPath)) return;
+
+        string? dir = Path.GetDirectoryName(entry.OutputPath);
+        if (dir != null && Directory.Exists(dir))
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName  = "explorer.exe",
+                Arguments = $"\"{dir}\""
+            });
+    }
+
     // ──────────────────────────────────────────────────────────────────────
     //  BATCH MODE
     // ──────────────────────────────────────────────────────────────────────
 
     private void OnBatchModeToggleClicked(object? sender, RoutedEventArgs e)
     {
-        _isBatchMode = !_isBatchMode;
+        _isBatchMode      = !_isBatchMode;
+        _isHistoryVisible = false;
+
+        FileModeButton.Classes.Set("batchActive",  !_isBatchMode);
         BatchModeToggle.Classes.Set("batchActive", _isBatchMode);
+        HistoryToggle.Classes.Set("batchActive",   false);
 
-        if (!_isHistoryVisible)
-        {
-            SingleFilePanel.IsVisible    = !_isBatchMode;
-            BatchPanel.IsVisible         = _isBatchMode;
-        }
-
+        SingleFilePanel.IsVisible    = !_isBatchMode;
+        BatchPanel.IsVisible         = _isBatchMode;
+        HistoryPanel.IsVisible       = false;
         GenerateButton.IsVisible     = !_isBatchMode;
         BatchConvertButton.IsVisible = _isBatchMode;
 
@@ -322,7 +365,7 @@ public partial class MainWindow : Window
         if (files.Count == 0) return;
 
         var vm = (DataContext as MainWindowViewModel)!;
-        vm.AddFilesToBatch(files.Select(f => f.Path.ToString().Remove(0, 8)));
+        vm.AddFilesToBatch(files.Select(f => f.Path.LocalPath));
         UpdateBatchQueueLabel();
         UpdateBatchConvertButton();
     }
@@ -337,14 +380,14 @@ public partial class MainWindow : Window
     private void UpdateBatchQueueLabel()
     {
         int n = (DataContext as MainWindowViewModel)!.BatchQueue.Count;
-        BatchHeaderLabel.Text  = $"BATCH QUEUE  ({n})";
+        BatchHeaderLabel.Text  = $"BATCH QUEUE ({n})";
         BatchProgressText.Text = n == 0 ? "No files queued" : $"{n} file{(n == 1 ? "" : "s")} queued";
     }
 
     private void UpdateBatchConvertButton()
     {
         int n = (DataContext as MainWindowViewModel)!.BatchQueue.Count;
-        BatchConvertButton.Content   = $"Convert All  ({n})";
+        BatchConvertButton.Content   = $"▶  Convert All ({n})";
         BatchConvertButton.IsEnabled = n > 0;
     }
 
@@ -517,7 +560,7 @@ public partial class MainWindow : Window
             });
 
         if (files.Count != 1) return;
-        LoadFile(files[0].Path.ToString().Remove(0, 8));
+        LoadFile(files[0].Path.LocalPath);
     }
 
     private async void LoadFile(string path)
@@ -531,6 +574,8 @@ public partial class MainWindow : Window
             x.Item2.Equals(vm.SelectedFileType, StringComparison.OrdinalIgnoreCase));
         _inputFileCategory = _ft.Item2 != null ? _ft.Item1 : -1;
 
+        DropZoneEmptyHint.IsVisible   = false;
+        DropZoneFileDisplay.IsVisible = true;
         SelectedFileNameDisplay.Text       = vm.SelectedFileNameWithType;
         SelectedFileNameDisplay.Foreground = new SolidColorBrush(Color.Parse("#cccccc"));
         MetaFileName.Text  = vm.SelectedFileNameWithType;
@@ -538,10 +583,16 @@ public partial class MainWindow : Window
         MetaFileSize.Text  = "—";
         ClearFileButton.IsVisible    = true;
         CopyPathButton.IsVisible     = false;
+        _lastOutputPath              = null;
+        OutputPreviewText.Text       = "";
         SelectedImage.Source         = null;
         VideoPreviewBadge.IsVisible  = false;
         ClearMediaInfoRows();
-        PreviewLoadingBar.IsVisible  = true;
+        PreviewLoadingBar.IsVisible = true;
+        PreviewLoadingBar.Value     = 0;
+        FileLoadingBar.IsVisible    = true;
+        FileLoadingBar.Value        = 10;
+        PreviewClickHint.IsVisible  = false;
 
         // Show trim panel for audio/video
         TrimPanel.IsVisible = _inputFileCategory == 1 || _inputFileCategory == 2;
@@ -550,9 +601,31 @@ public partial class MainWindow : Window
         UpdateTypeConversionAccessibility();
         UpdateSelectedFileSize();
 
-        await Task.WhenAll(UpdateImageAsync(), UpdateFileMetadataAsync());
+        // Run preview and metadata in parallel; update bars as stages complete
+        var imgTask  = UpdateImageAsync()
+            .ContinueWith(_ => Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                FileLoadingBar.Value    = 60;
+                PreviewLoadingBar.Value = 60;
+            }));
+        var metaTask = UpdateFileMetadataAsync()
+            .ContinueWith(_ => Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                FileLoadingBar.Value    = 90;
+            }));
 
+        await Task.WhenAll(imgTask, metaTask);
+
+        FileLoadingBar.Value        = 100;
+        PreviewLoadingBar.Value     = 100;
+        await Task.Delay(180);
         PreviewLoadingBar.IsVisible = false;
+        FileLoadingBar.IsVisible    = false;
+        FileLoadingBar.Value        = 0;
+
+        // Show click hint if image is visible
+        if (SelectedImage.Source != null)
+            PreviewClickHint.IsVisible = true;
     }
 
     private void OnClearFileClicked(object? sender, RoutedEventArgs e)
@@ -562,8 +635,10 @@ public partial class MainWindow : Window
         vm.SelectedFileName = "";
         vm.SelectedFileType = "";
 
-        SelectedFileNameDisplay.Text       = "No file selected — click Browse or drop a file here";
-        SelectedFileNameDisplay.Foreground = new SolidColorBrush(Color.Parse("#4a4a4a"));
+        DropZoneEmptyHint.IsVisible   = true;
+        DropZoneFileDisplay.IsVisible = false;
+        SelectedFileNameDisplay.Text  = "";
+        SelectedFileNameDisplay.Foreground = new SolidColorBrush(Color.Parse("#3a3e6a"));
         MetaFileName.Text = "—";
         MetaFileType.Text = "—";
         MetaFileSize.Text = "—";
@@ -571,6 +646,7 @@ public partial class MainWindow : Window
         SelectedImage.Source         = null;
         VideoPreviewBadge.IsVisible  = false;
         PreviewPlaceholder.IsVisible = false;
+        PreviewClickHint.IsVisible   = false;
         ClearFileButton.IsVisible    = false;
         TrimPanel.IsVisible          = false;
         TrimStartInput.Text          = "";
@@ -662,9 +738,9 @@ public partial class MainWindow : Window
         bool showAudio = !_isFilePresent || _inputFileCategory == 1 || _inputFileCategory == 2;
         bool showVideo = !_isFilePresent || _inputFileCategory == 1 || _inputFileCategory == 2;
 
-        TabImageButton.IsVisible = showImage;
-        TabAudioButton.IsVisible = showAudio;
-        TabVideoButton.IsVisible = showVideo;
+        TabImageButton.IsEnabled = showImage;
+        TabAudioButton.IsEnabled = showAudio;
+        TabVideoButton.IsEnabled = showVideo;
     }
 
     private void UpdateOptionsPanel()
@@ -705,13 +781,16 @@ public partial class MainWindow : Window
                 FileTypeFilter = new[] { ImageTypes }
             });
         if (files.Count != 1) return;
-        _atvImagePath = files[0].Path.ToString().Remove(0, 8);
+        _atvImagePath = files[0].Path.LocalPath;
         ATVImagePathBox.Text = _atvImagePath;
         IsGenerationViable();
     }
 
+    private static readonly IBrush _statusBrush = new SolidColorBrush(Color.Parse("#404060"));
+
     private void IsGenerationViable()
     {
+        _isResolutionValid = AreResolutionInputsValid();
         bool atvImageMissing = _isFilePresent && _inputFileCategory == 2 && _activeTab == 2
                                && _atvUseImage && string.IsNullOrEmpty(_atvImagePath);
 
@@ -725,6 +804,8 @@ public partial class MainWindow : Window
             ErrorText.Text = "Select a background image.";
         else
             ErrorText.Text = "";
+
+        ErrorText.Foreground = _statusBrush;
 
         bool viable = _isResolutionValid && _isConversionValid && _isFilePresent && !atvImageMissing;
         GenerateButton.IsEnabled = viable;
@@ -768,6 +849,10 @@ public partial class MainWindow : Window
         IsGenerationViable();
     }
 
+    private static IBrush GetThemeBrush(string key) =>
+        Application.Current?.Resources.TryGetResource(key, null, out var r) == true && r is IBrush b
+            ? b : Brushes.Transparent;
+
     private void OnAspectRatioLockClicked(object? sender, RoutedEventArgs e)
     {
         _aspectRatioLocked = !_aspectRatioLocked;
@@ -781,14 +866,14 @@ public partial class MainWindow : Window
         }
 
         AspectRatioLockButton.Background  = _aspectRatioLocked
-            ? new SolidColorBrush(Color.Parse("#0d2a4a"))
-            : new SolidColorBrush(Color.Parse("#1e1e1e"));
+            ? GetThemeBrush("ThemeChipActiveBg")
+            : GetThemeBrush("ThemeInputBg");
         AspectRatioLockButton.Foreground  = _aspectRatioLocked
-            ? new SolidColorBrush(Color.Parse("#4db8ff"))
+            ? GetThemeBrush("ThemeAccentLight")
             : new SolidColorBrush(Color.Parse("#555555"));
         AspectRatioLockButton.BorderBrush = _aspectRatioLocked
-            ? new SolidColorBrush(Color.Parse("#0063b1"))
-            : new SolidColorBrush(Color.Parse("#333333"));
+            ? GetThemeBrush("ThemeAccent")
+            : GetThemeBrush("ThemeInputBorder");
     }
 
     private void OnWindowKeyDown(object? sender, KeyEventArgs e)
@@ -802,6 +887,11 @@ public partial class MainWindow : Window
         else if (e.Key == Key.Escape && _isFilePresent && !_isBatchMode)
         {
             OnClearFileClicked(null, null!);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.O && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        {
+            OpenFileSelectWindow();
             e.Handled = true;
         }
     }
@@ -844,13 +934,14 @@ public partial class MainWindow : Window
 
     private string? _lastOutputPath;
 
-    private void OnCopyPathClicked(object? sender, RoutedEventArgs e)
+    private async void OnCopyPathClicked(object? sender, RoutedEventArgs e)
     {
         if (_lastOutputPath == null) return;
-        _ = GetTopLevel(this)?.Clipboard?.SetTextAsync(_lastOutputPath);
+        var clipboard = GetTopLevel(this)?.Clipboard;
+        if (clipboard != null) await clipboard.SetTextAsync(_lastOutputPath);
         CopyPathButton.Content = "Copied!";
-        Task.Delay(1500).ContinueWith(_ =>
-            Avalonia.Threading.Dispatcher.UIThread.Post(() => CopyPathButton.Content = "Copy Path"));
+        await Task.Delay(1500);
+        CopyPathButton.Content = "Copy Path";
     }
 
     private bool AreResolutionInputsValid()
@@ -859,8 +950,7 @@ public partial class MainWindow : Window
         string w = ResolutionWidthInput.Text  ?? "";
         string h = ResolutionHeightInput.Text ?? "";
         if (w == "" || h == "") return false;
-        if (!Regex.IsMatch(w, @"^\d+$") || !Regex.IsMatch(h, @"^\d+$")) return false;
-        return int.Parse(w) > 0 && int.Parse(h) > 0;
+        return int.TryParse(w, out int wv) && int.TryParse(h, out int hv) && wv > 0 && hv > 0;
     }
 
     // ──────────────────────────────────────────────────────────────────────
@@ -1007,6 +1097,19 @@ public partial class MainWindow : Window
         return $"{b / 1_048_576.0:F2} MB";
     }
 
+    // Maps quality slider (0–100, higher=better) to FFmpeg quality flags.
+    // libx264/libx265 use CRF 0–51 (lower=better); libvpx uses CRF 4–63 + -b:v 0.
+    private static string BuildVideoQualityFlag(int quality, bool webm)
+    {
+        if (webm)
+        {
+            int vpxCrf = (int)Math.Round(4 + (100 - quality) * 59.0 / 100.0);
+            return $"-crf {vpxCrf} -b:v 0 ";
+        }
+        int crf = (int)Math.Round((100 - quality) * 51.0 / 100.0);
+        return $"-crf {crf} ";
+    }
+
     /// <summary>
     /// Core conversion. All parameters are explicit so this is safe to call in parallel.
     /// </summary>
@@ -1061,23 +1164,34 @@ public partial class MainWindow : Window
                         ? $"-loop 1 -i \"{atvImagePath}\" "
                         : $"-f lavfi -i color=c=0x{atvColor}:size=1280x720:rate=25 ";
 
-                    bool   webm  = outputExt == "webm";
-                    string vCdc  = webm ? "libvpx"    : "libx264";
-                    string aCdc  = webm ? "libvorbis"  : "aac";
-                    string tune  = webm ? ""           : "-tune stillimage ";
-                    string pix   = webm ? ""           : "-pix_fmt yuv420p ";
+                    bool   webm        = outputExt == "webm";
+                    string vCdc        = webm ? "libvpx"   : "libx264";
+                    string aCdc        = webm ? "libvorbis" : "aac";
+                    string tune        = webm ? "" : "-tune stillimage ";
+                    string pix         = webm ? "" : "-pix_fmt yuv420p ";
+                    string qualityFlag = BuildVideoQualityFlag(quality, webm);
                     cmd = $"{overwriteFlag}{hwFlag}{bgPart}{progressFlag}{threadFlag}-i \"{inputPath}\" " +
-                          $"{trimStartFlag}{trimEndFlag}-c:v {vCdc} {tune}{pix}-c:a {aCdc} -b:a {bitrate} -shortest {output}";
+                          $"{trimStartFlag}{trimEndFlag}-c:v {vCdc} {tune}{pix}{qualityFlag}-c:a {aCdc} -b:a {bitrate} -shortest {output}";
                 }
                 else
                 {
                     string extraFlags = "";
-                    if (outEntry.Item1 == 1)      extraFlags = $"{threadFlag}-preset {preset} ";
-                    else if (outEntry.Item1 == 2) extraFlags = $"{threadFlag}-b:a {bitrate} ";
+                    if (outEntry.Item1 == 1)
+                    {
+                        bool   webm        = outputExt.Equals("webm", StringComparison.OrdinalIgnoreCase);
+                        string qualityFlag = BuildVideoQualityFlag(quality, webm);
+                        string scaleFlag   = doResize && resW > 0 && resH > 0
+                            ? $"-vf scale={resW}:{resH} " : "";
+                        extraFlags = $"{threadFlag}-preset {preset} {qualityFlag}{scaleFlag}";
+                    }
+                    else if (outEntry.Item1 == 2)
+                    {
+                        extraFlags = $"{threadFlag}-b:a {bitrate} ";
+                    }
                     cmd = $"{overwriteFlag}{hwFlag}{progressFlag}-i \"{inputPath}\" {trimStartFlag}{trimEndFlag}{extraFlags}{output}";
                 }
 
-                using var pollCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                using CancellationTokenSource pollCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
                 Task pollTask = progress != null && totalSec > 0
                     ? PollFfmpegProgressAsync(progressFile, totalSec, progress, pollCts.Token)
                     : Task.CompletedTask;
@@ -1092,14 +1206,24 @@ public partial class MainWindow : Window
             {
                 string outPath = Path.Combine(outputFolder, outputFileName) + "." + outputExt;
 
+                progress?.Report(5);
                 await Task.Run(() =>
                 {
-                    using var image = new MagickImage(inputPath);
-                    if (doResize)  image.Resize(resW, resH);
+                    using MagickImage image = new MagickImage(inputPath);
+                    progress?.Report(35);
+                    if (doResize)
+                    {
+                        MagickGeometry geo = new MagickGeometry(resW, resH) { IgnoreAspectRatio = true };
+                        image.Resize(geo);
+                    }
+
+                    progress?.Report(60);
                     if (stripMeta) image.Strip();
                     image.Quality = quality;
+                    progress?.Report(80);
                     image.Write(outPath);
                 }, ct);
+                progress?.Report(100);
             }
 
             return true;
@@ -1111,7 +1235,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private static async Task PollFfmpegProgressAsync(
+    private async static Task PollFfmpegProgressAsync(
         string progressFile, double totalSec, IProgress<double> progress, CancellationToken ct)
     {
         try
@@ -1122,10 +1246,10 @@ public partial class MainWindow : Window
                 if (!File.Exists(progressFile)) continue;
                 try
                 {
-                    using var fs = new FileStream(progressFile, FileMode.Open,
+                    await using FileStream fs = new FileStream(progressFile, FileMode.Open,
                                                   FileAccess.Read, FileShare.ReadWrite);
-                    using var sr = new StreamReader(fs);
-                    foreach (var line in sr.ReadToEnd().Split('\n'))
+                    using StreamReader sr = new StreamReader(fs);
+                    foreach (string line in (await sr.ReadToEndAsync(ct)).Split('\n'))
                     {
                         if (line.TrimStart().StartsWith("out_time_us=") &&
                             long.TryParse(line.Split('=')[1].Trim(), out long us))
@@ -1135,8 +1259,10 @@ public partial class MainWindow : Window
                             break;
                         }
                     }
+                } catch
+                {
+                    // ignored
                 }
-                catch { }
             }
         }
         catch (OperationCanceledException) { }
@@ -1152,7 +1278,7 @@ public partial class MainWindow : Window
             new FolderPickerOpenOptions { Title = "Select Output Folder", AllowMultiple = false });
 
         if (folders.Count != 1) return null;
-        return folders[0].Path.ToString().Remove(0, 8);
+        return folders[0].Path.LocalPath;
     }
 
     private void HandleAfterConversion(string outputFolder, string? outputFilePath)
@@ -1161,7 +1287,7 @@ public partial class MainWindow : Window
         if (s == null) return;
 
         if (s.IsOpenFolderAfter && Directory.Exists(outputFolder))
-            Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = outputFolder });
+            Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = $"\"{outputFolder}\"" });
         else if (s.IsOpenFileAfter && outputFilePath != null && File.Exists(outputFilePath))
             Process.Start(new ProcessStartInfo { FileName = outputFilePath, UseShellExecute = true });
     }
@@ -1385,19 +1511,15 @@ public partial class MainWindow : Window
             return;
         }
 
-        string[] imgTypes = { "png","jpg","jpeg","gif","webp","bmp","tif","tiff","ico","avif","heic" };
-        string[] vidTypes = { "mp4","mov","avi","mkv","webm","flv","wmv","ts","m4v" };
-        string ext = vm.SelectedFileType.ToLower();
-
         VideoPreviewBadge.IsVisible  = false;
         PreviewPlaceholder.IsVisible = false;
 
-        if (imgTypes.Contains(ext))
+        if (_inputFileCategory == 0) // Image
         {
             try { SelectedImage.Source = new Avalonia.Media.Imaging.Bitmap(vm.SelectedFilePath); }
             catch { SelectedImage.Source = null; }
         }
-        else if (vidTypes.Contains(ext))
+        else if (_inputFileCategory == 1) // Video — extract first frame
         {
             string tempPath     = Path.Combine(Path.GetTempPath(), $"fc_prev_{Guid.NewGuid():N}.jpg");
             string capturedPath = vm.SelectedFilePath;
@@ -1417,36 +1539,36 @@ public partial class MainWindow : Window
             catch { SelectedImage.Source = null; }
             finally { try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { } }
         }
-        else
+        else if (_inputFileCategory == 2) // Audio — try to extract embedded art
         {
-            string[] audioTypes = { "mp3","flac","ogg","aac","m4a","opus","aiff","wma","wav" };
-            bool gotArt = false;
-
-            if (audioTypes.Contains(ext))
+            bool   gotArt   = false;
+            string capturedPath = vm.SelectedFilePath;
+            string tempPath     = Path.Combine(Path.GetTempPath(), $"fc_art_{Guid.NewGuid():N}.jpg");
+            try
             {
-                string capturedPath = vm.SelectedFilePath;
-                string tempPath     = Path.Combine(Path.GetTempPath(), $"fc_art_{Guid.NewGuid():N}.jpg");
-                try
-                {
-                    await vm.RunFFmpegAsync($"-y -i \"{capturedPath}\" -an -vcodec copy \"{tempPath}\"");
+                await vm.RunFFmpegAsync($"-y -i \"{capturedPath}\" -an -vcodec copy \"{tempPath}\"");
 
-                    if (File.Exists(tempPath) && new FileInfo(tempPath).Length > 0)
-                    {
-                        byte[] artBytes = File.ReadAllBytes(tempPath);
-                        using var ms = new System.IO.MemoryStream(artBytes);
-                        SelectedImage.Source = new Avalonia.Media.Imaging.Bitmap(ms);
-                        gotArt = true;
-                    }
+                if (File.Exists(tempPath) && new FileInfo(tempPath).Length > 0)
+                {
+                    byte[] artBytes = File.ReadAllBytes(tempPath);
+                    using var ms = new System.IO.MemoryStream(artBytes);
+                    SelectedImage.Source = new Avalonia.Media.Imaging.Bitmap(ms);
+                    gotArt = true;
                 }
-                catch { }
-                finally { try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { } }
             }
+            catch { }
+            finally { try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { } }
 
             if (!gotArt)
             {
                 SelectedImage.Source         = null;
                 PreviewPlaceholder.IsVisible = true;
             }
+        }
+        else
+        {
+            SelectedImage.Source         = null;
+            PreviewPlaceholder.IsVisible = true;
         }
     }
 
@@ -1472,7 +1594,13 @@ public partial class MainWindow : Window
     // ──────────────────────────────────────────────────────────────────────
 
     private void OpenEnlargedImage(object? sender, PointerPressedEventArgs e)
-        => (DataContext as MainWindowViewModel)!.OpenSelectedImage();
+    {
+        var bmp = SelectedImage.Source as Avalonia.Media.Imaging.Bitmap;
+        (DataContext as MainWindowViewModel)!.OpenSelectedImage(bmp);
+    }
+
+    private void OnAppearanceButtonClicked(object? sender, RoutedEventArgs e)
+        => (DataContext as MainWindowViewModel)!.OpenSettingsToAppearance();
 
     public void OnGithubButtonClicked(object? sender, RoutedEventArgs e)
         => (DataContext as MainWindowViewModel)!.OpenLinkInBrowser("https://github.com/wmfor");

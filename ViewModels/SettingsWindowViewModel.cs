@@ -28,12 +28,13 @@ public class SettingsWindowViewModel : ViewModelBase
     private bool   _isUseLastFolder;
     private bool   _isUseCustomFolder;
     private string _customOutputFolder    = "";
-    public  string LastUsedFolder         = "";
+    private string _lastUsedFolder        = "";
 
     public bool   IsAskFolderEachTime   { get => _isAskFolderEachTime;   set => this.RaiseAndSetIfChanged(ref _isAskFolderEachTime,   value); }
     public bool   IsUseLastFolder       { get => _isUseLastFolder;       set => this.RaiseAndSetIfChanged(ref _isUseLastFolder,       value); }
     public bool   IsUseCustomFolder     { get => _isUseCustomFolder;     set => this.RaiseAndSetIfChanged(ref _isUseCustomFolder,     value); }
     public string CustomOutputFolder    { get => _customOutputFolder;    set => this.RaiseAndSetIfChanged(ref _customOutputFolder,    value); }
+    public string LastUsedFolder        { get => _lastUsedFolder;        set => this.RaiseAndSetIfChanged(ref _lastUsedFolder,        value); }
 
     // ── Output — after conversion ─────────────────────────────────────────
     private bool _isDoNothingAfter    = true;
@@ -111,6 +112,15 @@ public class SettingsWindowViewModel : ViewModelBase
     public bool OverwriteExistingFiles { get => _overwriteExistingFiles; set => this.RaiseAndSetIfChanged(ref _overwriteExistingFiles, value); }
     public bool StripImageMetadata     { get => _stripImageMetadata;     set => this.RaiseAndSetIfChanged(ref _stripImageMetadata,     value); }
 
+    // ── Appearance ────────────────────────────────────────────────────────
+    private int _themeIndex = 0; // 0 = Indigo (default)
+
+    public int ThemeIndex
+    {
+        get => _themeIndex;
+        set => this.RaiseAndSetIfChanged(ref _themeIndex, value);
+    }
+
     // ── Constructor ───────────────────────────────────────────────────────
     public SettingsWindowViewModel() { }
 
@@ -183,6 +193,7 @@ public class SettingsWindowViewModel : ViewModelBase
                 UseHardwareAcceleration,
                 ThreadCountIndex,
                 MaxParallelIndex,
+                ThemeIndex,
             };
 
             File.WriteAllText(SettingsFilePath,
@@ -217,6 +228,7 @@ public class SettingsWindowViewModel : ViewModelBase
             TryBool("UseHardwareAcceleration", v => vm.UseHardwareAcceleration = v);
             TryInt ("ThreadCountIndex",        v => vm.ThreadCountIndex = Math.Clamp(v, 0, ThreadCounts.Length - 1));
             TryInt ("MaxParallelIndex",        v => vm.MaxParallelIndex = Math.Clamp(v, 0, ParallelCounts.Length - 1));
+            TryInt ("ThemeIndex",              v => vm.ThemeIndex = Math.Clamp(v, 0, 4));
         }
         catch (Exception ex) { Console.WriteLine($"Settings load error: {ex.Message}"); }
         return vm;

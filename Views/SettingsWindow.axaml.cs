@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Platform.Storage;
+using FileConvert.Services;
 using FileConvert.ViewModels;
 
 namespace FileConvert.Views;
@@ -72,7 +73,7 @@ public partial class SettingsWindow : Window
             new FolderPickerOpenOptions { Title = "Select Default Output Folder", AllowMultiple = false });
 
         if (folders.Count != 1) return;
-        string path = folders[0].Path.ToString().Remove(0, 8);
+        string path = folders[0].Path.LocalPath;
         CustomFolderBox.Text = path;
         if (DataContext is SettingsWindowViewModel vm) vm.CustomOutputFolder = path;
     }
@@ -163,6 +164,31 @@ public partial class SettingsWindow : Window
             vm.MaxParallelIndex = index;
     }
 
+    // ── THEME chips ───────────────────────────────────────────────────────
+    private void OnThemeChipClicked(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button btn || _suppressEvents) return;
+        int index = int.Parse(btn.Tag?.ToString() ?? "0");
+
+        foreach (var child in ThemeChipPanel.Children.OfType<Button>())
+            child.Classes.Set("presetActive", child == btn);
+
+        if (DataContext is SettingsWindowViewModel vm)
+        {
+            vm.ThemeIndex = index;
+            ThemeManager.Apply(index);
+            UpdateActiveThemeLabel(index);
+        }
+    }
+
+    private void UpdateActiveThemeLabel(int index)
+    {
+        var name = index >= 0 && index < ThemeManager.Themes.Length
+            ? ThemeManager.Themes[index].Name
+            : "—";
+        ActiveThemeLabel.Text = $"Active theme: {name}";
+    }
+
     // ── Sync UI from ViewModel (called after loading settings from disk) ──
     public void SyncUIFromViewModel()
     {
@@ -204,13 +230,22 @@ public partial class SettingsWindow : Window
         foreach (var btn in ParallelCountPanel.Children.OfType<Button>())
             btn.Classes.Set("presetActive", int.Parse(btn.Tag?.ToString() ?? "-1") == vm.MaxParallelIndex);
 
+        // Theme chips
+        foreach (var btn in ThemeChipPanel.Children.OfType<Button>())
+            btn.Classes.Set("presetActive", int.Parse(btn.Tag?.ToString() ?? "-1") == vm.ThemeIndex);
+        UpdateActiveThemeLabel(vm.ThemeIndex);
+
         // Checkboxes
-        OverwriteCheck.IsChecked    = vm.OverwriteExistingFiles;
+        OverwriteCheck.IsChecked     = vm.OverwriteExistingFiles;
         StripMetadataCheck.IsChecked = vm.StripImageMetadata;
-        HWAccelCheck.IsChecked      = vm.UseHardwareAcceleration;
+        HWAccelCheck.IsChecked       = vm.UseHardwareAcceleration;
 
         _suppressEvents = false;
     }
+
+    // ── Tab navigation ────────────────────────────────────────────────────
+    public void NavigateToTab(int index) => SettingsTabControl.SelectedIndex = index;
+    public bool IsOnTab(int index)       => SettingsTabControl.SelectedIndex == index;
 
     // ── Helpers ───────────────────────────────────────────────────────────
     private static void SetChipActive(Button btn, bool active)
